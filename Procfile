@@ -1,0 +1,1 @@
+web:gunicorn updated_news.wsgi
