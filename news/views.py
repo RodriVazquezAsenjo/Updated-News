@@ -1,7 +1,9 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.views import generic
+from .models import News
 # Create your views here.
 
 
-def index(request):
-    return HttpResponse("Hello, World!")
+class NewsList(generic.ListView):
+    queryset = News.objects.all()
+    template_name = "news_list.html"
