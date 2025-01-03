@@ -19,5 +19,6 @@ class News(models.Model):
         return self.title
         
     class Meta:
+        ordering = ["-created_on"]
         verbose_name = "News Article"
         verbose_name_plural = "News Articles"
