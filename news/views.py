@@ -7,6 +7,7 @@ from .models import News
 class NewsList(generic.ListView):
     queryset = News.objects.all()
     template_name = "news_list.html"
+    paginate_by = 12
 
 class NewsDetail(generic.DetailView) :
     queryset = News.objects.filter()
