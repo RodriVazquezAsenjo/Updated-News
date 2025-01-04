@@ -14,6 +14,8 @@ class News(models.Model):
         on_delete=models.CASCADE,
         related_name="news_articles"
     )
+    likes = models.PositiveIntegerField(default=0)
+    read_later_by = models.ManyToManyField(User, related_name='read_later_news', blank=True)
 
     def __str__(self):
         return self.title

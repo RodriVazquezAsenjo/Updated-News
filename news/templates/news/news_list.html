@@ -19,6 +19,14 @@
         </div>
         <div>
             <p>{{ news.author }}</p>
+            <p>{{ news.likes }} likes</p>
+            <p>
+                {% if request.user in news.read_later_by.all %}
+                  Added
+                {% else %}
+                  Not Added
+                {% endif %}
+              </p>
         </div>
     </div>
    
