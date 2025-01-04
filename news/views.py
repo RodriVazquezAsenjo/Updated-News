@@ -7,3 +7,9 @@ from .models import News
 class NewsList(generic.ListView):
     queryset = News.objects.all()
     template_name = "news_list.html"
+
+class NewsDetail(generic.DetailView) :
+    queryset = News.objects.filter()
+    template_name = "news_detail.html"
+
+
