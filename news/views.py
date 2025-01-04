@@ -1,4 +1,4 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views import generic
 from .models import News
 # Create your views here.
@@ -9,8 +9,6 @@ class NewsList(generic.ListView):
     template_name = "news/news_list.html"
     paginate_by = 12
 
-class NewsDetail(generic.DetailView) :
-    queryset = News.objects.filter()
-    template_name = "news_detail.html"
-
-
+class NewsDetail(generic.DetailView):
+    model = News
+    template_name = "news/news_detail.html"

@@ -1,1 +1,22 @@
-Hello, Rodri!
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="container">
+    <div class="row">
+      <div class="col-md-12">
+        <h1>{{ news.title }}</h1>
+        <img src="{{ news.image.url }}" class="img-fluid" alt="{{ news.title }}">
+        <p><strong>Author:</strong> {{ news.author }}</p>
+        <p><strong>Published on:</strong> {{ news.created_at }}</p>
+        <p>{{ news.content }}</p>
+
+        <!-- Like & Read Later Section -->
+        <div class="mt-4">
+          <button class="btn btn-success">Like</button>
+          <button class="btn btn-dark">Comment</button>
+          <button class="btn btn-warning">Read Later</button>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
