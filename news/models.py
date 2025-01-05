@@ -24,3 +24,22 @@ class News(models.Model):
         ordering = ["-created_at"]
         verbose_name = "News Article"
         verbose_name_plural = "News Articles"
+
+class Comment(models.Model):
+    news = models.ForeignKey('News', on_delete=models.CASCADE, related_name='comments')
+    user = models.ForeignKey(User, on_delete = models.CASCADE, related_name='commenter', null=True, blank=True)
+    body = models.TextField()
+    created_at = models.DateTimeField(auto_now_add = True)
+    updated_at = models.DateTimeField(auto_now = True)
+
+    def __str__(self):
+        return f"Comment by {self.user.username if self.user else 'Anonymous'} on {self.post}"
+    
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(User, on_delete = models.CASCADE, related_name='profile')
+    account_opened = models.DateTimeField(auto_now_add=True)
+    posted_news = models.ManyToManyField('News', related_name='posted_by_user', blank=True)
+
+    def __str__(self):
+        return self.user.username
