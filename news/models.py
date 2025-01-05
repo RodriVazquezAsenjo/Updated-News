@@ -26,14 +26,13 @@ class News(models.Model):
         verbose_name_plural = "News Articles"
 
 class Comment(models.Model):
-    news = models.ForeignKey('News', on_delete=models.CASCADE, related_name='comments')
-    user = models.ForeignKey(User, on_delete = models.CASCADE, related_name='commenter', null=True, blank=True)
-    body = models.TextField()
-    created_at = models.DateTimeField(auto_now_add = True)
-    updated_at = models.DateTimeField(auto_now = True)
+    news = models.ForeignKey('News', related_name='comments', on_delete=models.CASCADE)
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()  # This should match the form's field
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Comment by {self.user.username if self.user else 'Anonymous'} on {self.post}"
+        return f"{self.author.username} on {self.news.title}"
     
 
 class UserProfile(models.Model):

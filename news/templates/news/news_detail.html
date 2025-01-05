@@ -1,26 +1,79 @@
-{% extends 'base.html' %}
-
+{% extends "base.html" %}
 {% block content %}
-  <div class="container">
+<div class="container mt-4">
     <div class="row">
-      <div class="col-md-12">
-        <h1>{{ news.title }}</h1>
-        <img src="{{ news.image.url }}" class="img-fluid" alt="{{ news.title }}">
-        <p><strong>Author:</strong> {{ news.author }}</p>
-        <p><strong>Published on:</strong> {{ news.created_at }}</p>
-        <p>{{ news.content }}</p>
+        <div class="col-md-8">
+            <!-- News Title -->
+            <h1 class="display-4">{{ news.title }}</h1>
 
-        <!-- Like & Read Later Section -->
-        <div class="mt-4">
-          <button class="btn btn-success">Like</button>
-          <form method="post">
-            {% csrf_token %}
-            {{ comment_form.as_p }}
-            <button type="submit">Submit</button>
-        </form>
-          <button class="btn btn-warning">Read Later</button>
+            <!-- Author and Date -->
+            <p class="text-muted">
+                By {{ news.author.username }} | Published on {{ news.created_at|date:"F j, Y" }}
+            </p>
+
+            <!-- News Image (Optional) -->
+            <img src="https://via.placeholder.com/800x400" class="img-fluid rounded mb-4" alt="News Image">
+
+            <!-- News Content -->
+            <div class="mb-4">
+                <p>{{ news.content }}</p>
+            </div>
+
+            <!-- Like and Read Later Buttons -->
+            <form method="post" class="d-flex gap-3">
+                {% csrf_token %}
+                <!-- Like Button -->
+                <button type="submit" name="like" class="btn btn-primary">
+                    ❤️ Like ({{ news.likes }})
+                </button>
+
+                <!-- Read Later Button -->
+                {% if request.user in news.read_later_by.all %}
+                    <button type="button" class="btn btn-secondary" disabled>
+                        ✅ Added to Read Later
+                    </button>
+                {% else %}
+                    <button type="submit" name="read_later" class="btn btn-outline-secondary">
+                        ➕ Add to Read Later
+                    </button>
+                {% endif %}
+            </form>
         </div>
-      </div>
+
+        <!-- Comments Section -->
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header">
+                    <h5>Comments</h5>
+                </div>
+                <div class="card-body">
+                    <!-- Comment List -->
+                    {% for comment in news.comments.all %}
+                        <div class="mb-3">
+                            <p><strong>{{ comment.author.username }}</strong>: {{ comment.content }}</p>
+                            <p class="text-muted small">{{ comment.created_at|date:"F j, Y, g:i a" }}</p>
+                        </div>
+                    {% empty %}
+                        <p>No comments yet. Be the first to comment!</p>
+                    {% endfor %}
+
+                    <!-- Add Comment Form -->
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="mb-3">
+                            <textarea
+                                class="form-control"
+                                name="comment"
+                                rows="3"
+                                placeholder="Write your comment here..."
+                                required
+                            ></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-success">Post Comment</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
+</div>
 {% endblock %}
