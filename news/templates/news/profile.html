@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<div class="container">
+    <h1>{{ profile.user.username }}</h1>
+    <p><strong>Account Opened:</strong> {{ profile.account_opened }}</p>
+    <h2>Posted News:</h2>
+    <ul>
+        {% for news in profile.posted_news.all %}
+            <li>
+                <a href="{% url 'news_detail' news.slug %}">{{ news.title }}</a>
+            </li>
+        {% empty %}
+            <li>No news posted yet.</li>
+        {% endfor %}
+    </ul>
+</div>
+
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<!-- Page Title -->
+<div class="d-flex justify-content-between align-items-center p-3 w-75 mx-auto">
+    <div class="display-4 text-decoration-underline">Read Later</div>
+    {% if user.is_authenticated %}
+    <button type="button" class="btn btn-dark btn-lg">Add Post</button>
+    {% endif %}
+</div>
+
+<!-- No Articles Saved -->
+{% if not read_later_list %}
+<div class="alert alert-info text-center w-75 mx-auto">
+    <strong>No articles saved for later!</strong>
+</div>
+{% else %}
+<!-- Articles List -->
+<div class="row g-4">
+    {% for news in read_later_list %}
+    <div class="col-12 col-md-6 col-lg-4">
+        <!-- Card -->
+        <div class="card">
+            <img src="{% static 'images/nobody.jpg' %}" class="card-img-top" alt="{{ news.title }}" style="max-height: 150px; object-fit: cover;">
+            <div class="card-body">
+                <h5 class="card-title text-truncate">{{ news.title }}</h5>
+                <p class="card-text">{{ news.content|truncatechars:150 }}</p>
+            </div>
+            <div class="card-footer d-flex justify-content-between align-items-center">
+                <small class="text-muted">{{ news.created_at }}</small>
+                <a href="{% url 'news_detail' news.slug %}" class="btn btn-dark btn-sm">
+                    <i class="fas fa-arrow-right"></i> Read More
+                </a>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endif %}
+
+{% endblock content %}

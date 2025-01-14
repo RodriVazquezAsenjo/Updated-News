@@ -29,7 +29,7 @@ SECRET_KEY = os.environ.get('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["8000-rodrivazque-updatednews-iff4amv7wsi.ws.codeinstitute-ide.net", ".herokuapp.com"]
+ALLOWED_HOSTS = ["8000-rodrivazque-updatednews-hzemht4czbj.ws.codeinstitute-ide.net", ".herokuapp.com"]
 
 
 # Application definition
@@ -131,7 +131,7 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-ACCOUNT_EMAIL_VERIFICATION = 'none',
+ACCOUNT_EMAIL_VERIFICATION = 'none'
 # Internationalization
 # https://docs.djangoproject.com/en/4.2/topics/i18n/
 
