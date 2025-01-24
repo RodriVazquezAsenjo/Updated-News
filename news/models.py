@@ -33,7 +33,7 @@ class Comment(models.Model):
         related_name='comments',
         on_delete=models.CASCADE
     )
-    author = models.ForeignKey(
+    commenter = models.ForeignKey(
         User,
         on_delete=models.CASCADE
     )
@@ -41,7 +41,7 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.author.username} on {self.news.title}"
+        return 'Comment {} by {}'.format(self.body, self.name)
 
     class Meta:
         ordering = ["-created_at"]
