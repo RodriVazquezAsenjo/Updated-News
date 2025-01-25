@@ -3,52 +3,52 @@
 {% load static %}
 
 <!-- Feed Title -->
-<div class="d-flex justify-content-between align-items-center p-3 w-75">
+<div class="d-flex justify-content-between align-items-center p-3">
     <div class="display-4 text-decoration-underline">FEED</div>
     {% if user.is_authenticated %}
     <button type="button" class="btn btn-dark btn-lg">Add Post</button>
     {% endif %}
 </div>
 
-{% for news in object_list %}
+{% for article in news %}
 
 <!-- CARD Layout -->
 <div class="d-flex align-items-center pb-3">
     <!-- Card -->
     <div class="w-75 me-3"> 
         <div class="card">
-            <img src="static/images/nobody.jpg" class="card-img-top d-block w-100 border-bottom" alt="{{ news.title }}" style="max-height: 130px; object-fit: cover;">
+            <img src="static/images/nobody.jpg" class="card-img-top d-block w-100 border-bottom" alt="{{ article.title }}" style="max-height: 130px; object-fit: cover;">
             <div class="card-body">
                 <div class="d-flex gap-4 align-items-center justify-content-between">
                     <div class="d-flex flex-column">
-                        <h5 class="card-title mb-1 text-truncate" style="font-size: 1.25rem;">{{ news.title }}</h5>
-                        <h6 class="text-muted" style="font-size: 0.875rem;">{{ news.created_at }}</h6>
+                        <h5 class="card-title mb-1 text-truncate" style="font-size: 1.25rem;">{{ article.title }}</h5>
+                        <h6 class="text-muted" style="font-size: 0.875rem;">{{ article.created_at }}</h6>
                     </div>
                 </div>
-                <p class="card-text">{{ news.content|truncatechars:250 }}</p>
+                <p class="card-text">{{ article.content|truncatechars:250 }}</p>
             </div>
         </div>
     
         <div class="post-info d-flex justify-content-end align-items-center mt-3 gap-3">
             <!-- Author Section -->
             <div class="author-info text-muted">
-                <small><i class="fas fa-user"></i> {{ news.author }}</small>
+                <small><i class="fas fa-user"></i> {{ article.author }}</small>
             </div>
     
             <!-- Likes Section -->
             <div class="likes-info text-muted">
-                <small><i class="fas fa-thumbs-up"></i> {{ news.likes }} Likes</small>
+                <small><i class="fas fa-thumbs-up"></i> {{ article.likes }} Likes</small>
             </div>
 
             <!-- Comments Section -->
             <div class="comments-info text-muted">
                 <i class="fas fa-comments me-1"></i>
-                <small>{{ news.comments.count }} Comments</small>
+                <small>{{ article.comments.count }} Comments</small>
             </div>
     
             <!-- Read Later Button -->
             <div class="read-later">
-                {% if request.user in news.read_later_by.all %}
+                {% if request.user in article.read_later_by.all %}
                     <button class="btn btn-sm btn-dark">
                         <i class="fas fa-check"></i> Saved
                     </button>
@@ -62,7 +62,7 @@
     </div>
    
     <!-- Button -->
-    <a href="{% url 'news_detail' news.slug %}" class="btn btn-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+    <a href="{% url 'news_detail' article.slug %}" class="btn btn-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
         <i class="fas fa-arrow-right"></i>
     </a>
 </div>

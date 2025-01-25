@@ -21,13 +21,18 @@ def detail_news(request, slug):
     news_article = get_object_or_404(News, slug=slug)
     new_comment = None
 
+    like_count = news_article.likes.count()
+    comment_count = news_article.comments.count()
+
     if request.method == 'POST':
         if 'like' in request.POST:
             like = Likes.objects.filter(news_article=news_article, user=request.user).first()
             if like:
                 like.delete()
+                like_count -= 1
             else:
                 Likes.objects.create(user=request.user, news_article=news_article)
+                like_count += 1
 
         if 'read_later' in request.POST:
             if request.user in news_article.read_later.all():
@@ -54,6 +59,8 @@ def detail_news(request, slug):
         'comment_form': comment_form,
         'liked': Likes.objects.filter(news_article=news_article, user=request.user).exists(),
         'read_later': request.user in news_article.read_later.all(),
+        'like_count': like_count,
+        'comment_count': comment_count,
     }
 
     return render(request, template, context)
@@ -67,7 +74,6 @@ class ReadLater(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         return self.request.user.read_later_news.all()
 
-
 class UserProfileDetailView(generic.DetailView):
     model = UserProfile
     template_name = 'news/profile.html'
@@ -75,7 +81,6 @@ class UserProfileDetailView(generic.DetailView):
 
     def get_object(self):
         return get_object_or_404(UserProfile, user_id=self.kwargs['pk'])
-
 
 def OrganizationListView(request):
     organizations = Organization.objects.all()
@@ -87,7 +92,6 @@ def OrganizationListView(request):
     }
 
     return render(request, template, context)
-
 
 def OrganizationDetailView(request, slug):
     organization = get_object_or_404(Organization, slug=slug)

@@ -26,7 +26,7 @@ class News(models.Model):
         ordering = ["-created_at"]
 
 class Likes(models.Model):
-    news_article = model.ForeignKey(
+    news_article = models.ForeignKey(
         News,
         on_delete = models.CASCADE,
         related_name = 'likes' 
@@ -37,8 +37,6 @@ class Likes(models.Model):
         related_name = 'likes'
     )
 
-    class Meta: 
-        unique_together = ('user', 'post')
     def __str__(self):
         return '{} has liked {}'.format(self.user.username, self.news_article.title)
 
