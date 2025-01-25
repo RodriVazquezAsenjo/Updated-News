@@ -13,8 +13,7 @@ class News(models.Model):
         on_delete=models.CASCADE,
         related_name="news_articles"
     )
-    likes = models.PositiveIntegerField(default=0)
-    read_later_by = models.ManyToManyField(
+    read_later = models.ManyToManyField(
         User,
         related_name='read_later_news',
         blank=True
@@ -25,6 +24,23 @@ class News(models.Model):
 
     class Meta:
         ordering = ["-created_at"]
+
+class Likes(models.Model):
+    news_article = model.ForeignKey(
+        News,
+        on_delete = models.CASCADE,
+        related_name = 'likes' 
+    )
+    user = models.ForeignKey(
+        User, 
+        on_delete = models.CASCADE,
+        related_name = 'likes'
+    )
+
+    class Meta: 
+        unique_together = ('user', 'post')
+    def __str__(self):
+        return '{} has liked {}'.format(self.user.username, self.news_article.title)
 
 
 class Comment(models.Model):

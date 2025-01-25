@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import generic
 from django.contrib.auth.models import User
-from .models import News, UserProfile, Comment, Organization
+from .models import News, UserProfile, Comment, Likes, Organization
 from .forms import CommentForm
 
 
@@ -13,37 +13,48 @@ def all_news(request):
         'page_title': 'Feed',
         'news': news
     }
+
+
     return render(request, template, context)
 
 
 def detail_news(request, slug):
     news_article = get_object_or_404(News, slug=slug)
+    new_comment = None
 
     if request.method == 'POST':
         if 'like' in request.POST:
-            news_article.likes += 1
-            news_article.save()
+            existing_like = news_article.likes.filter(user=request.user).first()
+            if existing_like:
+                existing_like.delete()
+            else:
+                Like.objects.create(user=request.user, news=news_article)
 
-        elif 'read_later' in request.POST:
-            news_article.read_later_by.add(request.user)
+        if 'read_later' in request.POST:
+            if request.user in news_article.read_later.all():
+                news_article.read_later.remove(request.user)
+            else:
+                news_article.read_later.add(request.user)
 
-        elif 'comment' in request.POST:
-            comment_form = CommentForm(request.POST)
-            if comment_form.is_valid():
-                comment = comment_form.save(commit=False)
-                comment.news = news_article
-                comment.author = request.user
-                comment.save()
+        comment_form = CommentForm(request.POST)
+        if comment_form.is_valid():
+            new_comment = comment_form.save(commit=False)
+            new_comment.news = news_article
+            new_comment.author = request.user
+            new_comment.save()
 
         return redirect(news_article.get_absolute_url())
 
-    comment_form = CommentForm()
+    else:
+        comment_form = CommentForm()
 
     template = 'news/news_detail.html'
     context = {
         'page_title': news_article.title,
         'news_article': news_article,
         'comment_form': comment_form,
+        'liked': news_article.likes.filter(user=request.user).exists(),
+        'read_later': request.user in news_article.read_later.all(),
     }
 
     return render(request, template, context)
