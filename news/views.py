@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.text import slugify
 from .models import News, UserProfile, Comment, Likes, Organization
-from .forms import CommentForm, NewsForm, OrganizationForm
+from .forms import CommentForm, NewsForm, OrganizationForm, UserProfileForm
 
 
 def all_news(request):
@@ -115,16 +115,16 @@ def profile_modifications (request, username):
         return redirect('profile_detail', username=request.user.username)
 
     if request.method == 'POST':
-        profile_form = ProfileForm(request.POST, instance=user_profile)
+        profile_form = UserProfileForm(request.POST, instance=user_profile)
         if profile_form.is_valid():
             profile = profile_form.save(commit=False)
             profile.affiliation = request.user.profile.affiliation
             profile.save()
             return redirect('profile_detail', username=request.user.username)
     else:
-        profile_form = ProfileForm(instance=user_profile)
+        profile_form = UserProfileForm(instance=user_profile)
     
-    template = profile_modifications.html
+    template = 'news/profile_modifications.html'
     context = {
         'profile_form': profile_form,
         'user_profile': user_profile
