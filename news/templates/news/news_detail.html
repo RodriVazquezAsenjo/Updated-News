@@ -24,17 +24,17 @@
                 {% csrf_token %}
                 <!-- Like Button -->
                 <button type="submit" name="like" class="btn btn-primary">
-                    ❤️ Like ({{ news.likes }})
+                    Like ({{ news.likes }})
                 </button>
 
                 <!-- Read Later Button -->
                 {% if request.user in news.read_later_by.all %}
                     <button type="button" class="btn btn-secondary" disabled>
-                        ✅ Added to Read Later
+                        Added to Read Later
                     </button>
                 {% else %}
                     <button type="submit" name="read_later" class="btn btn-outline-secondary">
-                        ➕ Add to Read Later
+                        Add to Read Later
                     </button>
                 {% endif %}
             </form>

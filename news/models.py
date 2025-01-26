@@ -75,6 +75,7 @@ class UserProfile(models.Model):
         blank=True,
         related_name="affiliated_users"
     )
+    active = models.BooleanField(default=False)
 
     def __str__(self):
         return self.user.username
@@ -82,7 +83,7 @@ class UserProfile(models.Model):
 
 class Organization(models.Model):
     name = models.CharField(max_length=200, unique=True, db_index=True)
-    slug = models.SlugField(unique=True)
+    slug = models.SlugField(max_length=200, unique=True, db_index=True)
     #logo = models.ImageField(null=True, blank=True)
     description = models.TextField()
     founded = models.DateField(null=True, blank=True)

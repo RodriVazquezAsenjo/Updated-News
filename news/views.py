@@ -74,13 +74,16 @@ class ReadLater(LoginRequiredMixin, generic.ListView):
     def get_queryset(self):
         return self.request.user.read_later_news.all()
 
+
 class UserProfileDetailView(generic.DetailView):
     model = UserProfile
     template_name = 'news/profile.html'
     context_object_name = 'profile'
 
     def get_object(self):
-        return get_object_or_404(UserProfile, user_id=self.kwargs['pk'])
+        username = self.kwargs['username']
+        user = get_object_or_404(User, username=username)
+        return get_object_or_404(UserProfile, user=user)
 
 def OrganizationListView(request):
     organizations = Organization.objects.all()
@@ -94,7 +97,7 @@ def OrganizationListView(request):
     return render(request, template, context)
 
 def OrganizationDetailView(request, slug):
-    organization = get_object_or_404(Organization, slug=slug)
+    organizations = get_object_or_404(Organization, slug=slug)
 
     template = 'news/organization_detail.html'
     context = {

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import News, Comment, Organization
+from .models import News, Comment, Organization, UserProfile
 from django_summernote.admin import SummernoteModelAdmin
 
 # Register your models here.
@@ -30,3 +30,13 @@ class OrganizationAdmin(SummernoteModelAdmin):
     ordering = ('name',)
     filter_horizontal = ('subscribers', 'authors')
     summernote_fields = ('description',)
+
+@admin.register(UserProfile)
+class UserProfileAdmin(SummernoteModelAdmin):
+    list_display = ('account_opened', 'affiliation')
+    list_filter = ('account_opened', 'affiliation')
+    search_fields = ('name', 'surname', 'email', 'username', 'affiliation')
+    actions = ('approve_affiliation')
+
+    def approve_affiliation(self, request, queryset):
+        queryset.update(active=True)
