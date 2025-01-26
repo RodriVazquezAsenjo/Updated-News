@@ -4,7 +4,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .models import News, UserProfile, Comment, Likes, Organization
-from .forms import CommentForm
+from .forms import CommentForm, NewsForm
 
 
 def all_news(request):
@@ -63,6 +63,24 @@ def detail_news(request, slug):
         'comment_count': comment_count,
     }
 
+    return render(request, template, context)
+
+@login_required
+def add_article(request):
+    if request.method == 'POST':
+        form = NewsForm(request.POST)
+        if form.is_valid():
+            news_article = form.save(commit=False)
+            news_article.author = request.user
+            news_article.save()
+            return redirect('news_list')
+    else:
+        form = NewsForm()
+
+    template = 'news/add_article.html'
+    context = {
+        'form': form
+    }
     return render(request, template, context)
 
 class ReadLater(LoginRequiredMixin, generic.ListView):
