@@ -4,10 +4,10 @@
     <div class="row">
         <div class="col-md-8">
             <!-- News Title -->
-            <h1 class="display-4">{{ news.title }}</h1>
+            <h1 class="display-4 mb-3">{{ news.title }}</h1>
 
             <!-- Author and Date -->
-            <p class="text-muted">
+            <p class="text-muted mb-4">
                 By {{ news.author.username }} | Published on {{ news.created_at|date:"F j, Y" }}
             </p>
 
@@ -20,11 +20,11 @@
             </div>
 
             <!-- Like and Read Later Buttons -->
-            <form method="post" class="d-flex gap-3">
+            <form method="post" class="d-flex gap-3 mb-4">
                 {% csrf_token %}
                 <!-- Like Button -->
                 <button type="submit" name="like" class="btn btn-primary">
-                    Like ({{ news.likes }})
+                    Like ({{ news.likes.count }})
                 </button>
 
                 <!-- Read Later Button -->
@@ -50,7 +50,7 @@
                     <!-- Comment List -->
                     {% for comment in news.comments.all %}
                         <div class="mb-3">
-                            <p><strong>{{ comment.author.username }}</strong>: {{ comment.content }}</p>
+                            <p><strong>{{ comment.commenter.username }}</strong>: {{ comment.content }}</p>
                             <p class="text-muted small">{{ comment.created_at|date:"F j, Y, g:i a" }}</p>
                         </div>
                     {% empty %}

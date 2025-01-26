@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<!-- Organization Detail Title -->
+<div class="d-flex justify-content-between align-items-center p-3">
+    <div class="display-4 text-decoration-underline">{{ organization.name }}</div>
+</div>
+
+<div class="d-flex align-items-center pb-3">
+    <!-- Organization Details Card -->
+    <div class="w-75 me-3"> 
+        <div class="card">
+            <img src="static/images/nobody.jpg" class="card-img-top d-block w-100 border-bottom" alt="{{ organization.name }}" style="max-height: 130px; object-fit: cover;">
+            <div class="card-body">
+                <h5 class="card-title mb-1 text-truncate" style="font-size: 1.25rem;">{{ organization.name }}</h5>
+                <h6 class="text-muted" style="font-size: 0.875rem;">Founded: {{ organization.founded }}</h6>
+                <p class="text-muted" style="font-size: 0.875rem;">Country: {{ organization.country }}</p>
+                <p class="card-text">{{ organization.description }}</p>
+            </div>
+        </div>
+    
+        <!-- Additional Info -->
+        <div class="post-info d-flex justify-content-end align-items-center mt-3 gap-3">
+            <!-- Subscribers Section -->
+            <div class="subscribers-info text-muted">
+                <small><i class="fas fa-users"></i> {{ organization.subscribers.count }} Subscribers</small>
+            </div>
+    
+            <!-- Authors Section -->
+            <div class="authors-info text-muted">
+                <small><i class="fas fa-pencil-alt"></i> Authors: 
+                {% for author in organization.authors.all %}
+                    {{ author.username }}{% if not forloop.last %}, {% endif %}
+                {% endfor %}
+                </small>
+            </div>
+    
+            <!-- Rating Section -->
+            <div class="rating-info text-muted">
+                <small><i class="fas fa-star"></i> Rating: 
+                {% if organization.rating %}
+                    {{ organization.rating.username }}
+                {% else %}
+                    Not rated
+                {% endif %}
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Back to List Button -->
+<div class="mt-3">
+    <a href="{% url 'organizations_list' %}" class="btn btn-dark">Back to Organizations List</a>
+</div>
+
+{% endblock content %}

@@ -3,8 +3,9 @@ from django.views import generic
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.utils.text import slugify
 from .models import News, UserProfile, Comment, Likes, Organization
-from .forms import CommentForm, NewsForm
+from .forms import CommentForm, NewsForm, OrganizationForm
 
 
 def all_news(request):
@@ -72,6 +73,9 @@ def add_article(request):
         if form.is_valid():
             news_article = form.save(commit=False)
             news_article.author = request.user
+            news_article.slug = slugify(news_article.title)
+            if request.user.profile.active and request.user.profile.affiliation:
+                news_article.affiliation = request.user.profile.affiliation
             news_article.save()
             return redirect('news_list')
     else:
@@ -103,6 +107,30 @@ class UserProfileDetailView(generic.DetailView):
         user = get_object_or_404(User, username=username)
         return get_object_or_404(UserProfile, user=user)
 
+@login_required
+def profile_modifications (request, username):
+    user_profile = get_object_or_404(UserProfile, user__username=username)
+
+    if request.user.username != username:
+        return redirect('profile_detail', username=request.user.username)
+
+    if request.method == 'POST':
+        profile_form = ProfileForm(request.POST, instance=user_profile)
+        if profile_form.is_valid():
+            profile = profile_form.save(commit=False)
+            profile.affiliation = request.user.profile.affiliation
+            profile.save()
+            return redirect('profile_detail', username=request.user.username)
+    else:
+        profile_form = ProfileForm(instance=user_profile)
+    
+    template = profile_modifications.html
+    context = {
+        'profile_form': profile_form,
+        'user_profile': user_profile
+    }
+    return render(request, template, context)
+
 def OrganizationListView(request):
     organizations = Organization.objects.all()
 
@@ -119,8 +147,26 @@ def OrganizationDetailView(request, slug):
 
     template = 'news/organization_detail.html'
     context = {
-        'page_title': organization.name,
-        'organization': organization
+        'page_title': organizations.name,
+        'organization': organizations
     }
 
+    return render(request, template, context)
+
+@login_required
+def add_organization(request):
+    if request.method == 'POST':
+        form = OrganizationForm(request.POST)
+        if form.is_valid():
+            organization = form.save(commit=False)
+            organization.slug = slugify(organization.name)
+            organization.save()
+            return redirect('organizations_list')
+    else:
+        form = OrganizationForm()
+
+    template = 'news/add_organization.html'
+    context = {
+        'form': form
+    }
     return render(request, template, context)
