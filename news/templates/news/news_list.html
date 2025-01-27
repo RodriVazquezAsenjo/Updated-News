@@ -39,7 +39,16 @@
     
             <!-- Likes Section -->
             <div class="likes-info text-muted">
-                <small><i class="fas fa-thumbs-up"></i> {{ article.likes.count }} Likes</small>
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    <button type="submit" name="likes" value="{{ article.id }}" class="btn btn-sm btn-dark">
+                        {% if liked %}
+                            <i class="fas fa-thumbs-up"></i> {{ like_count }} Likes
+                        {% else %}
+                            <i class="far fa-thumbs-up"></i> {{ like_count }} Likes
+                        {% endif %}
+                    </button>
+                </form>
             </div>
 
             <!-- Comments Section -->
@@ -49,16 +58,19 @@
             </div>
     
             <!-- Read Later Button -->
-            <div class="read-later">
-                {% if request.user in article.read_later.all %}
-                    <button class="btn btn-sm btn-dark">
-                        <i class="fas fa-check"></i> Saved
-                    </button>
-                {% else %}
-                    <button class="btn btn-sm btn-dark">
-                        <i class="fas fa-bookmark"></i> Read Later
-                    </button>
-                {% endif %}
+            <div class="read-later-button">
+                <form method="POST" action="">
+                    {% csrf_token %}
+                    {% if request.user in article.read_later.all %}
+                        <button type="submit" name="read_later" value="{{ article.id }}" class="btn btn-sm btn-dark">
+                            <i class="fas fa-check"></i> Saved
+                        </button>
+                    {% else %}
+                        <button type="submit" name="read_later" value="{{ article.id }}" class="btn btn-sm btn-dark">
+                            <i class="fas fa-bookmark"></i> Read Later
+                        </button>
+                    {% endif %}
+                </form>
             </div>
         </div>
     </div>

@@ -13,17 +13,27 @@ class News(models.Model):
         on_delete=models.CASCADE,
         related_name="news_articles"
     )
-    read_later = models.ManyToManyField(
-        User,
-        related_name='read_later_news',
-        blank=True
-    )
 
     def __str__(self):
         return self.title
 
     class Meta:
         ordering = ["-created_at"]
+    
+class ReadLater (models.Model):
+    news_article = models.ForeignKey(
+        News, 
+        on_delete =models.CASCADE,
+        related_name ='read_later'
+    )
+    user = models.ForeignKey(
+        User,
+        on_delete = models.CASCADE,
+        related_name = 'read_later'
+    )
+
+    def __str__(self):
+        return '{} has saved {}'.format(self.user.username, self.news_article.title)
 
 class Likes(models.Model):
     news_article = models.ForeignKey(
@@ -55,7 +65,8 @@ class Comment(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return 'Comment {} by {}'.format(self.body, self.name)
+        return 'Comment {} by {}'.format(self.content, self.commenter.username)
+
 
     class Meta:
         ordering = ["-created_at"]

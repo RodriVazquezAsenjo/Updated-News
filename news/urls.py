@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import all_news, detail_news, add_article, add_organization, profile_modifications, ReadLater, UserProfileDetailView, OrganizationListView, OrganizationDetailView
+from .views import all_news, detail_news, toggle_read_later, add_article, add_organization, profile_modifications, ReadLater, UserProfileDetailView, OrganizationListView, OrganizationDetailView
 
 urlpatterns = [
     path('', all_news, name='news_list'),
@@ -11,4 +11,5 @@ urlpatterns = [
     path('organizations/<slug:slug>/', OrganizationDetailView, name='organization_detail'),
     path('add_organization/', add_organization, name='add_organization'),
     path('<slug:slug>/', detail_news, name='news_detail'),
+    path('toggle-read-later/', toggle_read_later, name='toggle_read_later'),
 ]

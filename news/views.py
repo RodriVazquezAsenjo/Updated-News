@@ -8,39 +8,47 @@ from .models import News, UserProfile, Comment, Likes, Organization
 from .forms import CommentForm, NewsForm, OrganizationForm, UserProfileForm
 
 
+@login_required
+def toggle_read_later(request):
+    if request.method == "POST":
+        article_id = request.POST.get("read_later")
+        news_article = get_object_or_404(News, id=article_id)
+
+        if ReadLater.objects.filter(user=request.user, news_article=news_article).exists():
+            ReadLater.objects.filter(user=request.user, news_article=news_article).delete()
+        else:
+            ReadLater.objects.create(user=request.user, news_article=news_article)
+        
+        return redirect("news_list")
+
+def toggle_like(request):
+    if request.method == "POST":
+        article_id = request.POST.get('likes')
+        news_article = get_object_or_404(News, id=article_id)
+        like = Likes.objects.filter(news_article=news_article, user=request.user).first()
+
+        if like:
+            like.delete()
+        else:
+            Likes.objects.create(user=request.user, news_article=news_article)
+        return redirect("news_list")
+
 def all_news(request):
     news = News.objects.all()
     template = 'news/news_list.html'
     context = {
         'page_title': 'Feed',
-        'news': news
+        'news': news,
     }
     return render(request, template, context)
+
 
 @login_required
 def detail_news(request, slug):
     news_article = get_object_or_404(News, slug=slug)
     new_comment = None
 
-    like_count = news_article.likes.count()
-    comment_count = news_article.comments.count()
-
     if request.method == 'POST':
-        if 'like' in request.POST:
-            like = Likes.objects.filter(news_article=news_article, user=request.user).first()
-            if like:
-                like.delete()
-                like_count -= 1
-            else:
-                Likes.objects.create(user=request.user, news_article=news_article)
-                like_count += 1
-
-        if 'read_later' in request.POST:
-            if request.user in news_article.read_later.all():
-                news_article.read_later.remove(request.user)
-            else:
-                news_article.read_later.add(request.user)
-
         comment_form = CommentForm(request.POST)
         if comment_form.is_valid():
             new_comment = comment_form.save(commit=False)
@@ -49,19 +57,16 @@ def detail_news(request, slug):
             new_comment.save()
 
         return redirect(news_article.get_absolute_url())
-
     else:
         comment_form = CommentForm()
-
-    template = 'news/news_detail.html'
+    
+    template= 'news/news_detail.html'
     context = {
         'page_title': news_article.title,
         'news_article': news_article,
         'comment_form': comment_form,
         'liked': Likes.objects.filter(news_article=news_article, user=request.user).exists(),
         'read_later': request.user in news_article.read_later.all(),
-        'like_count': like_count,
-        'comment_count': comment_count,
     }
 
     return render(request, template, context)
@@ -94,8 +99,11 @@ class ReadLater(LoginRequiredMixin, generic.ListView):
     paginate_by = 6
 
     def get_queryset(self):
-        return self.request.user.read_later_news.all()
+        return News.objects.filter(read_later__user=self.request.user)
 
+def readlater(request, username):
+    username = self.kwargs['username']
+    article_news = get_object_or_404(News, username)
 
 class UserProfileDetailView(generic.DetailView):
     model = UserProfile
