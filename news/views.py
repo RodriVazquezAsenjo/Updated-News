@@ -31,7 +31,7 @@ def selected_news_article(request, slug):
         if comment_form.is_valid():
             new_comment = comment_form.save(commit=False)
             new_comment.news_article = selected_news_article
-            new_comment.commenter = request.user
+            new_comment.commenter = request.user.user_profile
             new_comment.save()
             return redirect('news_detail', slug=selected_news_article.slug)
     context = {

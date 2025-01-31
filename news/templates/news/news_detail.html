@@ -70,18 +70,10 @@
                     {% endfor %}
 
                     <!-- Add Comment Form -->
-                    <form method="post">
+                    <form id="comment_form" method="post">
+                        {{ comment_form }}
                         {% csrf_token %}
-                        <div class="mb-3">
-                            <textarea
-                                class="form-control"
-                                name="comment"
-                                rows="3"
-                                placeholder="Write your comment here..."
-                                required
-                            ></textarea>
-                        </div>
-                        <button type="submit" class="btn btn-success">Post Comment</button>
+                        <button id="submitButton" type="submit" class="btn btn-dark">Post Comment</button>
                     </form>
                 </div>
             </div>
