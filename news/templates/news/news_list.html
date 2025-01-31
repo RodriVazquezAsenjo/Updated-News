@@ -12,8 +12,7 @@
     {% endif %}
 </div>
 
-{% for article in news %}
-
+{% for article in all_news %}
 <!-- CARD Layout -->
 <div class="d-flex align-items-center pb-3">
     <!-- Card -->
@@ -34,46 +33,37 @@
         <div class="post-info d-flex justify-content-end align-items-center mt-3 gap-3">
             <!-- Author Section -->
             <div class="author-info text-muted">
-                <small><i class="fas fa-user"></i> {{ article.author }}</small>
+                <small><i class="fas fa-user"></i> {{ article.author.user.username }}</small>
             </div>
     
             <!-- Likes Section -->
-            <div class="likes-info text-muted">
-                <form method="POST" action="">
-                    {% csrf_token %}
-                    <button type="submit" name="likes" value="{{ article.id }}" class="btn btn-sm btn-dark">
-                        {% if liked %}
-                            <i class="fas fa-thumbs-up"></i> {{ like_count }} Likes
-                        {% else %}
-                            <i class="far fa-thumbs-up"></i> {{ like_count }} Likes
-                        {% endif %}
-                    </button>
-                </form>
+            <div class='likes-info text-muted'>
+                
+                <a class='btn btn-sm {% if user in news_article.likes.all %} btn-dark {% else %} btn-outline-dark {% endif %}'  
+                    href="{% url 'news_article_like' news_article.slug %}" 
+                    aria-label="Like this article">
+                        {{news_article.total_likes}} 
+                        <i class='fas fa-thumbs-up'></i>
+                </a>
             </div>
 
             <!-- Comments Section -->
             <div class="comments-info text-muted">
                 <i class="fas fa-comments me-1"></i>
-                <small>{{ article.comments.count }} Comments</small>
+                <small>{{ article.comment.count }} Comments</small>
             </div>
     
-            <!-- Read Later Button -->
-            <div class="read-later-button">
-                <form method="POST" action="">
-                    {% csrf_token %}
-                    {% if request.user in article.read_later.all %}
-                        <button type="submit" name="read_later" value="{{ article.id }}" class="btn btn-sm btn-dark">
-                            <i class="fas fa-check"></i> Saved
-                        </button>
-                    {% else %}
-                        <button type="submit" name="read_later" value="{{ article.id }}" class="btn btn-sm btn-dark">
-                            <i class="fas fa-bookmark"></i> Read Later
-                        </button>
-                    {% endif %}
-                </form>
+            <!-- Read Later Section -->
+            <div class='bookmark-info text-muted'>
+                
+                <a class='btn btn-sm {% if user in news_article.bookmark.all %} btn-dark {% else %} btn-outline-dark {% endif %}'  
+                    href="{% url 'news_article_bookmark' news_article.id %}" 
+                    aria-label="Bookmark this article">
+                        <i class='fas fa-bookmark'></i> Bookmark
+                </a>
             </div>
-        </div>
-    </div>
+                    </div>
+                </div>
    
     <!-- Button -->
     <a href="{% url 'news_detail' article.slug %}" class="btn btn-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">

@@ -1,42 +1,41 @@
 from django.contrib import admin
-from .models import News, Comment, Organization, UserProfile
+from .models import NewsArticles, Comment, Organizations, UserProfile
 from django_summernote.admin import SummernoteModelAdmin
 
 # Register your models here.
 
-@admin.register(News)
+@admin.register(NewsArticles)
 class NewsAdmin(SummernoteModelAdmin):
     list_display = ('title', 'slug', 'author', 'created_at')
     search_fields = ['title', 'author']
-    list_filter = ('title', 'author', 'created_at')
+    list_filter = ('created_at', 'author')
     prepopulated_fields = {'slug': ('title',)}
     summernote_fields = ('content',)
 
 @admin.register(Comment)
 class CommentAdmin(SummernoteModelAdmin):
-    list_display = ('news', 'commenter', 'created_at')
-    list_filter = ('created_at', 'news')
-    search_fields = ('news__title', 'commenter__username', 'content')
+    list_display = ('news_article', 'commenter', 'created_at')
+    list_filter = ('news_article', 'created_at')
+    search_fields = ('news_article__title', 'commenter__username', 'content') 
     ordering = ('-created_at',)
     readonly_fields = ('created_at',)
     summernote_fields = ('content',)
 
-@admin.register(Organization)
+@admin.register(Organizations)
 class OrganizationAdmin(SummernoteModelAdmin):
-    list_display = ('name', 'country', 'founded', 'rating')
-    list_filter = ('country', 'founded')
+    list_display = ('name', 'country', 'foundation')
+    list_filter = ('country', 'foundation')
     search_fields = ('name', 'description', 'slug')
     prepopulated_fields = {'slug': ('name',)}
     ordering = ('name',)
-    filter_horizontal = ('subscribers', 'authors')
     summernote_fields = ('description',)
 
 @admin.register(UserProfile)
 class UserProfileAdmin(SummernoteModelAdmin):
-    list_display = ('account_opened', 'affiliation')
-    list_filter = ('account_opened', 'affiliation')
-    search_fields = ('name', 'surname', 'email', 'username', 'affiliation')
-    actions = ('approve_affiliation')
+    list_display = ('account_opened', 'affiliated')
+    list_filter = ('account_opened', 'affiliated')  
+    search_fields = ('name', 'surname', 'email', 'username', 'affiliated')
+    actions = ('approve_affiliated',)
 
-    def approve_affiliation(self, request, queryset):
+    def approve_affiliated(self, request, queryset):
         queryset.update(active=True)

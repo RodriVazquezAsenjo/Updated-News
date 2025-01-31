@@ -1,4 +1,4 @@
-from .models import Comment, UserProfile, News, Organization
+from .models import Comment, UserProfile, NewsArticles, Organizations
 from django import forms
 
 
@@ -10,16 +10,14 @@ class CommentForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = [
-            'affiliation'
-        ]
+        fields = ['affiliated']
 
-class NewsForm(forms.ModelForm):
+class AddArticleForm(forms.ModelForm):
     class Meta:
-        model = News
+        model = NewsArticles
         fields = ['title', 'content']
 
-class OrganizationForm(forms.ModelForm):
+class OrganizationsForm(forms.ModelForm):
     class Meta:
-        model = Organization
-        fields = ['name', 'description', 'founded', 'country']
+        model = Organizations
+        fields = ['name', 'description', 'foundation', 'country']

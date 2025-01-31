@@ -4,143 +4,125 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.text import slugify
-from .models import News, UserProfile, Comment, Likes, Organization
-from .forms import CommentForm, NewsForm, OrganizationForm, UserProfileForm
+from .models import NewsArticles, UserProfile, Comment, Organizations
+from .forms import CommentForm, AddArticleForm, OrganizationsForm, UserProfileForm
 
 
+def all_news_articles(request):
+	all_news_articles = NewsArticles.objects.all()
+	template = 'news/news_list.html'
+	context = {
+		'title': 'FEED',
+		'all_news': all_news_articles,
+		}
+	return render(request, template, context)
+		
+		
+def selected_news_article(request, slug):
+	selected_news_article = get_object_or_404(NewsArticles, slug=slug)
+	template = 'news/news_detail.html'
+	#comment logic 
+	new_comment = None
+	if request.method == 'POST':
+		comment_form = CommentForm(data=reques.POST)
+		if comment_form.is_valid():
+			new_comment = comment_form.save(commit=False)
+			new_comment.selected_news_article = selected_news_article
+			new_comment.commenter = request.user
+			new_comment.save()
+		else:
+			comment_form = CommentForm()
+		
+	context = {
+		'selected_news_article': selected_news_article,
+		'new_comment': new_comment,
+		'comment_form': comment_form
+		}
+	return render(request, template, context)
+	
 @login_required
-def toggle_read_later(request):
-    if request.method == "POST":
-        article_id = request.POST.get("read_later")
-        news_article = get_object_or_404(News, id=article_id)
-
-        if ReadLater.objects.filter(user=request.user, news_article=news_article).exists():
-            ReadLater.objects.filter(user=request.user, news_article=news_article).delete()
-        else:
-            ReadLater.objects.create(user=request.user, news_article=news_article)
-        
-        return redirect("news_list")
-
-def toggle_like(request):
-    if request.method == "POST":
-        article_id = request.POST.get('likes')
-        news_article = get_object_or_404(News, id=article_id)
-        like = Likes.objects.filter(news_article=news_article, user=request.user).first()
-
-        if like:
-            like.delete()
-        else:
-            Likes.objects.create(user=request.user, news_article=news_article)
-        return redirect("news_list")
-
-def all_news(request):
-    news = News.objects.all()
-    template = 'news/news_list.html'
-    context = {
-        'page_title': 'Feed',
-        'news': news,
-    }
-    return render(request, template, context)
-
-
+def like(request, slug):
+	#likes logic
+	selected_news_article = get_object_or_404(NewsArticles, slug=slug)
+	if selected_news_article.likes.filter(id=request.user.id):
+		selected_news_article.likes.remove(request.user)
+	else:
+		selected_news_article.likes.add(request.user)
+	return redirect('home')
+	
 @login_required
-def detail_news(request, slug):
-    news_article = get_object_or_404(News, slug=slug)
-    new_comment = None
-
-    if request.method == 'POST':
-        comment_form = CommentForm(request.POST)
-        if comment_form.is_valid():
-            new_comment = comment_form.save(commit=False)
-            new_comment.news = news_article
-            new_comment.commenter = request.user
-            new_comment.save()
-
-        return redirect(news_article.get_absolute_url())
+def bookmark(request, slug):
+    selected_news_article = get_object_or_404(NewsArticles, slug=slug)
+    if selected_news_article.bookmark.filter(id=request.user.id):
+        selected_news_article.bookmark.remove(request.user)
     else:
-        comment_form = CommentForm()
-    
-    template= 'news/news_detail.html'
-    context = {
-        'page_title': news_article.title,
-        'news_article': news_article,
-        'comment_form': comment_form,
-        'liked': Likes.objects.filter(news_article=news_article, user=request.user).exists(),
-        'read_later': request.user in news_article.read_later.all(),
-    }
-
-    return render(request, template, context)
-
+        selected_news_article.bookmark.add(request.user)
+    return redirect('news_list')
+	
 @login_required
 def add_article(request):
     if request.method == 'POST':
-        form = NewsForm(request.POST)
+        form = AddArticleForm(request.POST)
         if form.is_valid():
             news_article = form.save(commit=False)
-            news_article.author = request.user
+            news_article.author = request.user.user_profile
             news_article.slug = slugify(news_article.title)
-            if request.user.profile.active and request.user.profile.affiliation:
-                news_article.affiliation = request.user.profile.affiliation
+            if request.user.user_profile.affiliated:
+                news_article.organization = request.user.user_profile.affiliated
             news_article.save()
-            return redirect('news_list')
+            return redirect('home')
     else:
-        form = NewsForm()
+        form = AddArticleForm()
 
-    template = 'news/add_article.html'
+    template = 'add_article.html'
     context = {
         'form': form
     }
     return render(request, template, context)
 
-class ReadLater(LoginRequiredMixin, generic.ListView):
-    model = News
-    template_name = 'news/read_later.html'
-    context_object_name = 'read_later'
-    paginate_by = 6
-
-    def get_queryset(self):
-        return News.objects.filter(read_later__user=self.request.user)
-
-def readlater(request, username):
-    username = self.kwargs['username']
-    article_news = get_object_or_404(News, username)
-
-class UserProfileDetailView(generic.DetailView):
-    model = UserProfile
-    template_name = 'news/profile.html'
-    context_object_name = 'profile'
-
-    def get_object(self):
-        username = self.kwargs['username']
-        user = get_object_or_404(User, username=username)
-        return get_object_or_404(UserProfile, user=user)
+@login_required
+def profile_view(request, pk):
+    user_profile = get_object_or_404(UserProfile, pk=pk)
+    template = 'news/profile.html'
+    context = {
+        'user_profile': user_profile
+    }
+    return (request, template, context)
 
 @login_required
-def profile_modifications (request, username):
-    user_profile = get_object_or_404(UserProfile, user__username=username)
+def profile_modifications(request, pk):
+    user_profile = get_object_or_404(UserProfile, pk=pk)
 
-    if request.user.username != username:
-        return redirect('profile_detail', username=request.user.username)
-
+    if request.user.user_profile.pk != pk:
+        return redirect('profile_detail', pk=request.user.user_profile.pk)
     if request.method == 'POST':
         profile_form = UserProfileForm(request.POST, instance=user_profile)
         if profile_form.is_valid():
             profile = profile_form.save(commit=False)
-            profile.affiliation = request.user.profile.affiliation
+            profile.affiliated = request.user.user_profile.affiliated
             profile.save()
-            return redirect('profile_detail', username=request.user.username)
+            return redirect('profile_detail', pk=request.user.user_profile.pk)
     else:
         profile_form = UserProfileForm(instance=user_profile)
-    
+
     template = 'news/profile_modifications.html'
     context = {
         'profile_form': profile_form,
         'user_profile': user_profile
     }
     return render(request, template, context)
-
-def OrganizationListView(request):
-    organizations = Organization.objects.all()
+    
+def BookMark(request):
+	bookmarked_news_articles = NewsArticles.objects.filter(author__affiliated=organization)
+	template = 'news/bookmark.html'
+	context = {
+		'title': FEED,
+		'bookmarked_news_articles': bookmarked_news_articles,
+		}
+	return(request, template, context)
+    
+def all_organizations(request):
+    organizations = Organizations.objects.all()
 
     template = 'news/organization_list.html'
     context = {
@@ -150,13 +132,13 @@ def OrganizationListView(request):
 
     return render(request, template, context)
 
-def OrganizationDetailView(request, slug):
-    organizations = get_object_or_404(Organization, slug=slug)
+def selected_organizations(request, slug):
+    organization = get_object_or_404(Organizations, slug=slug)
 
     template = 'news/organization_detail.html'
     context = {
-        'page_title': organizations.name,
-        'organization': organizations
+        'page_title': organization.name,
+        'organization': organization
     }
 
     return render(request, template, context)
@@ -167,9 +149,9 @@ def add_organization(request):
         form = OrganizationForm(request.POST)
         if form.is_valid():
             organization = form.save(commit=False)
-            organization.slug = slugify(organization.name)
+            organization.slug = slugify(organization.name) 
             organization.save()
-            return redirect('organizations_list')
+            return redirect('organization_list')
     else:
         form = OrganizationForm()
 
