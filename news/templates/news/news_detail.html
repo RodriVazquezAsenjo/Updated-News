@@ -4,40 +4,52 @@
     <div class="row">
         <div class="col-md-8">
             <!-- News Title -->
-            <h1 class="display-4 mb-3">{{ news.title }}</h1>
+            <h1 class="display-4 mb-3">{{ selected_news_article.title }}</h1>
 
             <!-- Author and Date -->
             <p class="text-muted mb-4">
-                By {{ news.author.username }} | Published on {{ news.created_at|date:"F j, Y" }}
+                By {{ selected_news_article.author }} | Published on {{ selected_news_article.created_at|date:"F j, Y" }}
             </p>
 
             <!-- News Image (Optional) -->
             <img src="https://via.placeholder.com/800x400" class="img-fluid rounded mb-4" alt="News Image">
-
+            <div class="post-info d-flex align-items-center mb-4 gap-3">
+                <!-- Likes Section -->
+                <div class="likes-info">
+                    <a href="{% url 'news_article_like' selected_news_article.slug %}" aria-label="Like this article">  
+                            {% if request.user.user_profile in article.likes.all %}
+                                <div class= "btn btn-sm btn-secondary">
+                                    {{selected_news_article.total_likes}}
+                                    <i class="fas fa-thumbs-up"></i>
+                                </div>
+                            {% else %}
+                                <div class= "btn btn-sm btn-outline-secondary">
+                                    {{selected_news_article.total_likes}}
+                                    <i class="fas fa-thumbs-up"></i>
+                                </div>
+                            {% endif %}
+                    </a>
+                </div>
+                <!-- Bookmark Section -->
+                <div class='bookmark-info'>
+                    
+                    <a href="{% url 'news_article_bookmark' selected_news_article.slug %}" aria-label="Bookmark this article">
+                        {% if request.user.user_profile in selected_news_article.bookmark.all %}
+                            <div class= "btn btn-sm btn-secondary">
+                                <i class="fas fa-bookmark"></i> Bookmarked
+                            </div>
+                        {% else %}
+                            <div class= "btn btn-sm btn-outline-secondary">
+                                <i class="fas fa-bookmark"></i> Bookmark
+                            </div>
+                        {% endif %}
+                    </a>
+                </div>
+            </div>
             <!-- News Content -->
             <div class="mb-4">
-                <p>{{ news.content }}</p>
+                <p>{{ selected_news_article.content }}</p>
             </div>
-
-            <!-- Like and Read Later Buttons -->
-            <form method="post" class="d-flex gap-3 mb-4">
-                {% csrf_token %}
-                <!-- Like Button -->
-                <button type="submit" name="like" class="btn btn-primary">
-                    Like ({{ news.likes.count }})
-                </button>
-
-                <!-- Read Later Button -->
-                {% if request.user in news.read_later_by.all %}
-                    <button type="button" class="btn btn-secondary" disabled>
-                        Added to Read Later
-                    </button>
-                {% else %}
-                    <button type="submit" name="read_later" class="btn btn-outline-secondary">
-                        Add to Read Later
-                    </button>
-                {% endif %}
-            </form>
         </div>
 
         <!-- Comments Section -->
@@ -48,7 +60,7 @@
                 </div>
                 <div class="card-body">
                     <!-- Comment List -->
-                    {% for comment in news.comments.all %}
+                    {% for comment in selected_news_article.comments.all %}
                         <div class="mb-3">
                             <p><strong>{{ comment.commenter.username }}</strong>: {{ comment.content }}</p>
                             <p class="text-muted small">{{ comment.created_at|date:"F j, Y, g:i a" }}</p>

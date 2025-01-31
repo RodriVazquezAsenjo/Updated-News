@@ -78,6 +78,9 @@ class NewsArticles(models.Model):
 
     def total_likes(self):
         return self.likes.count()
+    
+    def total_comments(self):
+        return self.comments.count()
 
     class Meta:
         ordering = ['-created_at']
@@ -89,7 +92,7 @@ class Comment(models.Model):
     news_article = models.ForeignKey(
         NewsArticles,
         on_delete=models.CASCADE,
-        related_name='comment',
+        related_name='comments',
     )
     commenter = models.ForeignKey(
         UserProfile,
@@ -99,6 +102,7 @@ class Comment(models.Model):
 
     def __str__(self):
         return 'Comment {} by {}'.format(self.content, self.commenter.username)
+
 
     class Meta:
         ordering = ["-created_at"]

@@ -6,6 +6,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.utils.text import slugify
 from .models import NewsArticles, UserProfile, Comment, Organizations
 from .forms import CommentForm, AddArticleForm, OrganizationsForm, UserProfileForm
+from urllib.parse import urlparse
+
 
 
 def all_news_articles(request):
@@ -16,48 +18,55 @@ def all_news_articles(request):
 		'all_news': all_news_articles,
 		}
 	return render(request, template, context)
-		
-		
+
+    
 def selected_news_article(request, slug):
-	selected_news_article = get_object_or_404(NewsArticles, slug=slug)
-	template = 'news/news_detail.html'
-	#comment logic 
-	new_comment = None
-	if request.method == 'POST':
-		comment_form = CommentForm(data=reques.POST)
-		if comment_form.is_valid():
-			new_comment = comment_form.save(commit=False)
-			new_comment.selected_news_article = selected_news_article
-			new_comment.commenter = request.user
-			new_comment.save()
-		else:
-			comment_form = CommentForm()
-		
-	context = {
-		'selected_news_article': selected_news_article,
-		'new_comment': new_comment,
-		'comment_form': comment_form
-		}
-	return render(request, template, context)
-	
+    selected_news_article = get_object_or_404(NewsArticles, slug=slug)
+    template = 'news/news_detail.html'
+    #comment logic
+    new_comment = None
+    comment_form = CommentForm()
+    if request.method == 'POST':
+        comment_form = CommentForm(data=request.POST)
+        if comment_form.is_valid():
+            new_comment = comment_form.save(commit=False)
+            new_comment.news_article = selected_news_article
+            new_comment.commenter = request.user
+            new_comment.save()
+            return redirect('news_detail', slug=selected_news_article.slug)
+    context = {
+        'selected_news_article': selected_news_article,
+        'new_comment': new_comment, 
+        'comment_form': comment_form
+    }
+    return render(request, template, context)
+
 @login_required
 def like(request, slug):
 	#likes logic
+    #obtain the object from NewsArticles where the slug is equal to the slug of the object. 
 	selected_news_article = get_object_or_404(NewsArticles, slug=slug)
-	if selected_news_article.likes.filter(id=request.user.id):
-		selected_news_article.likes.remove(request.user)
+    #we filter the object and say that if the selected article's like list has the id from the user_profile
+	if selected_news_article.likes.filter(id=request.user.user_profile.id):
+        #then we remove the user_profile from the list
+		selected_news_article.likes.remove(request.user.user_profile)
 	else:
-		selected_news_article.likes.add(request.user)
-	return redirect('home')
+        #otherwise, add the user_profile. 
+		selected_news_article.likes.add(request.user.user_profile)
+        #after this is done return it to the news_list page. 
+	return redirect('news_list')
 	
 @login_required
 def bookmark(request, slug):
     selected_news_article = get_object_or_404(NewsArticles, slug=slug)
-    if selected_news_article.bookmark.filter(id=request.user.id):
-        selected_news_article.bookmark.remove(request.user)
+    if selected_news_article.bookmark.filter(id=request.user.user_profile.id):
+        selected_news_article.bookmark.remove(request.user.user_profile)
     else:
-        selected_news_article.bookmark.add(request.user)
-    return redirect('news_list')
+        selected_news_article.bookmark.add(request.user.user_profile)
+
+    referer = request.META.get('HTTP_REFERER', '/')
+    return redirect(referer)
+    
 	
 @login_required
 def add_article(request):
@@ -70,7 +79,7 @@ def add_article(request):
             if request.user.user_profile.affiliated:
                 news_article.organization = request.user.user_profile.affiliated
             news_article.save()
-            return redirect('home')
+            return redirect('news_list')
     else:
         form = AddArticleForm()
 
