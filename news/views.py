@@ -86,27 +86,27 @@ def add_article(request):
     return render(request, template, context)
 
 @login_required
-def profile_view(request, pk):
-    user_profile = get_object_or_404(UserProfile, pk=pk)
+def profile_view(request, username):
+    user_profile = get_object_or_404(UserProfile, user__username=username)
+    all_news_articles = NewsArticles.objects.filter(author=request.user.user_profile)
     template = 'news/profile.html'
     context = {
-        'user_profile': user_profile
+        'user_profile': user_profile,
+        'all_news_articles': all_news_articles
     }
-    return (request, template, context)
+    return render(request, template, context)
 
 @login_required
-def profile_modifications(request, pk):
-    user_profile = get_object_or_404(UserProfile, pk=pk)
+def profile_modifications(request, username):
+    user_profile = get_object_or_404(UserProfile, user__username=username)
 
-    if request.user.user_profile.pk != pk:
-        return redirect('profile_detail', pk=request.user.user_profile.pk)
+    if request.user.username != username:
+        return redirect('user_profile', username=request.user.username)
     if request.method == 'POST':
         profile_form = UserProfileForm(request.POST, instance=user_profile)
         if profile_form.is_valid():
-            profile = profile_form.save(commit=False)
-            profile.affiliated = request.user.user_profile.affiliated
-            profile.save()
-            return redirect('profile_detail', pk=request.user.user_profile.pk)
+            user_profile.save()
+            return redirect('user_profile', username=request.user.username)
     else:
         profile_form = UserProfileForm(instance=user_profile)
 
@@ -152,17 +152,60 @@ def selected_organizations(request, slug):
 @login_required
 def add_organization(request):
     if request.method == 'POST':
-        form = OrganizationForm(request.POST)
+        form = OrganizationsForm(request.POST)
         if form.is_valid():
             organization = form.save(commit=False)
             organization.slug = slugify(organization.name) 
             organization.save()
-            return redirect('organization_list')
+            return redirect('organizations_list')
     else:
-        form = OrganizationForm()
+        form = OrganizationsForm()
 
     template = 'news/add_organization.html'
     context = {
         'form': form
+    }
+    return render(request, template, context)
+
+@login_required
+def news_edit(request, slug):
+    # Get the article by slug
+    news_article = get_object_or_404(NewsArticles, slug=slug)
+    
+    # Check if the current user is the author of the article
+    if news_article.author != request.user.user_profile:
+        return redirect('news_detail', slug=slug)  # Redirect if not the author
+
+    if request.method == 'POST':
+        form = AddArticleForm(request.POST, instance=news_article)
+        if form.is_valid():
+            form.save()
+            return redirect('news_detail', slug=news_article.slug)
+    else:
+        form = AddArticleForm(instance=news_article)
+    
+    template = 'news/edit_article.html'
+    context = {
+        'form': form,
+        'news_article': news_article
+    }
+    return render(request, template, context)
+
+@login_required
+def news_delete(request, slug):
+    # Get the article by slug
+    news_article = get_object_or_404(NewsArticles, slug=slug)
+
+    # Check if the current user is the author of the article
+    if news_article.author != request.user.user_profile:
+        return redirect('news_detail', slug=slug)  # Redirect if not the author
+
+    if request.method == 'POST':
+        news_article.delete()
+        return redirect('news_list')  # Redirect to the news list after deletion
+
+    template = 'news/delete_article.html'
+    context = {
+        'news_article': news_article
     }
     return render(request, template, context)

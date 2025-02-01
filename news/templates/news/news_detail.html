@@ -14,6 +14,11 @@
             <!-- News Image (Optional) -->
             <img src="https://via.placeholder.com/800x400" class="img-fluid rounded mb-4" alt="News Image">
             <div class="post-info d-flex align-items-center mb-4 gap-3">
+                <!-- Comments Section -->
+                <div class="comments-info text-muted">
+                    <i class="fas fa-comments"></i>
+                    {{ selected_news_article.comments.count }} Comments
+                </div>
                 <!-- Likes Section -->
                 <div class="likes-info">
                     <a href="{% url 'news_article_like' selected_news_article.slug %}" aria-label="Like this article">  
@@ -51,7 +56,7 @@
                 <p>{{ selected_news_article.content }}</p>
             </div>
         </div>
-
+        {% if user.is_authenticated %}
         <!-- Comments Section -->
         <div class="col-md-4">
             <div class="card">
@@ -78,6 +83,7 @@
                 </div>
             </div>
         </div>
+        {% endif %}
     </div>
 </div>
 {% endblock %}

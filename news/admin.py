@@ -32,7 +32,7 @@ class OrganizationAdmin(SummernoteModelAdmin):
 
 @admin.register(UserProfile)
 class UserProfileAdmin(SummernoteModelAdmin):
-    list_display = ('account_opened', 'affiliated')
+    list_display = ('user', 'account_opened', 'affiliated')
     list_filter = ('account_opened', 'affiliated')  
     search_fields = ('name', 'surname', 'email', 'username', 'affiliated')
     actions = ('approve_affiliated',)

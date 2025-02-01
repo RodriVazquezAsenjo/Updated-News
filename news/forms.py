@@ -10,7 +10,7 @@ class CommentForm(forms.ModelForm):
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
-        fields = ['affiliated']
+        fields = ['affiliated', 'nationality', 'bio']
 
 class AddArticleForm(forms.ModelForm):
     class Meta:

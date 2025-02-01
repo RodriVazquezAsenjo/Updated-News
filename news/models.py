@@ -32,14 +32,9 @@ class UserProfile(models.Model):
         blank=True,
         related_name='affiliated_users'
     )
+    bio = models.TextField(blank=True, null=True)
     nationality = CountryField()
     account_opened = models.DateTimeField(auto_now_add=True)
-    subscriber = models.ManyToManyField(
-        'self', 
-        symmetrical=False,
-        blank=True,
-        related_name='subscribers'
-    )
 
     def __str__(self):
         return self.user.username

@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+{% block content %}
+{% load static %}
+
+<h2>Are you sure you want to delete this article?</h2>
+<p>{{ news_article.title }}</p>
+<p>{{ news_article.content }}</p>
+<form method="POST">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-danger">Yes, Delete</button>
+    <a href="{% url 'news_detail' news_article.slug %}" class="btn btn-secondary">Cancel</a>
+</form>
+
+{% endblock %}
