@@ -139,11 +139,12 @@ def all_organizations(request):
 
 def selected_organizations(request, slug):
     organization = get_object_or_404(Organizations, slug=slug)
-
+    news_articles_from_organization = NewsArticles.objects.filter(author__affiliated = organization)
     template = 'news/organization_detail.html'
     context = {
         'page_title': organization.name,
-        'organization': organization
+        'organization': organization,
+        'news_articles_from_organization': news_articles_from_organization
     }
 
     return render(request, template, context)

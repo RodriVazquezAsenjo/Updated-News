@@ -12,6 +12,9 @@ class Organizations(models.Model):
     def __str__(self):
         return self.name
 
+    def total_authors(self):
+        return self.affiliated_users.count()
+
     class Meta:
         ordering = ['name']
 
