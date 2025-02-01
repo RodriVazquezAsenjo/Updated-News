@@ -10,23 +10,16 @@
         <div class="row g-4">
             {% for news_article in bookmarked_news_articles %}
             <!-- CARD Layout -->
-            <div class="d-flex align-items-center pb-3">
-                <!-- Card -->
-                <div class="w-75 me-3"> 
-                    <div class="card">
-                        <img src="https://via.placeholder.com/800x400" class="card-img-top d-block w-100 border-bottom" alt="{{ news_article.title }}" style="max-height: 130px; object-fit: cover;">
-                        <div class="card-body">
-                            <div class="d-flex gap-4 align-items-center justify-content-between">
-                                <div class="d-flex flex-column">
-                                    <h5 class="card-title mb-1 text-truncate" style="font-size: 1.25rem;">{{ news_article.title }}</h5>
-                                    <h6 class="text-muted" style="font-size: 0.875rem;">{{ news_article.created_at }}</h6>
-                                </div>
-                            </div>
-                            <p class="card-text">{{ news_article.content|truncatechars:250 }}</p>
-                        </div>
+            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                <div class="card">
+                    <img src="https://via.placeholder.com/800x400" class="card-img-top d-block w-100 border-bottom" alt="{{ news_article.title }}" style="max-height: 130px; object-fit: cover;">
+                    <div class="card-body">
+                        <h5 class="card-title mb-1 text-truncate" style="font-size: 1.25rem;">{{ news_article.title }}</h5>
+                        <h6 class="text-muted" style="font-size: 0.875rem;">{{ news_article.created_at }}</h6>
+                        <p class="card-text">{{ news_article.content|truncatechars:250 }}</p>
                     </div>
-                
-                    <div class="post-info d-flex align-items-center mt-3 gap-3">
+                    
+                    <div class="post-info d-flex flex-column flex-md-row align-items-center gap-3 mt-3">
                         <!-- Author Section -->
                         <div class="author-info text-muted">
                             <small><i class="fas fa-user"></i> {{ news_article.author.user.username }}</small>
@@ -34,38 +27,35 @@
 
                         <!-- Comments Section -->
                         <div class="comments-info text-muted">
-                            <i class="fas fa-comments"></i>
-                            {{ news_article.comments.count }} Comments
+                            <i class="fas fa-comments"></i> {{ news_article.comments.count }}
                         </div>
-                
-                
+
                         <!-- Likes Section -->
                         <div class="likes-info">
-                            <a href="{% url 'news_article_like' news_article.slug %}" aria-label="Like this article">  
-                                    {% if request.user.user_profile in news_article.likes.all %}
-                                        <div class= "btn btn-sm btn-secondary">
-                                            {{news_article.total_likes}}
-                                            <i class="fas fa-thumbs-up"></i>
-                                        </div>
-                                    {% else %}
-                                        <div class= "btn btn-sm btn-outline-secondary">
-                                            {{news_article.total_likes}}
-                                            <i class="fas fa-thumbs-up"></i>
-                                        </div>
-                                    {% endif %}
+                            <a href="{% url 'news_article_like' news_article.slug %}" aria-label="Like this article">
+                                {% if request.user.user_profile in news_article.likes.all %}
+                                    <div class="btn btn-sm btn-secondary">
+                                        {{ news_article.total_likes }}
+                                        <i class="fas fa-thumbs-up"></i>
+                                    </div>
+                                {% else %}
+                                    <div class="btn btn-sm btn-outline-secondary">
+                                        {{ news_article.total_likes }}
+                                        <i class="fas fa-thumbs-up"></i>
+                                    </div>
+                                {% endif %}
                             </a>
                         </div>
 
                         <!-- Bookmark Section -->
-                        <div class='bookmark-info'>
-                            
+                        <div class="bookmark-info">
                             <a href="{% url 'news_article_bookmark' news_article.slug %}" aria-label="Bookmark this article">
                                 {% if request.user.user_profile in news_article.bookmark.all %}
-                                    <div class= "btn btn-sm btn-secondary">
+                                    <div class="btn btn-sm btn-secondary">
                                         <i class="fas fa-bookmark"></i> Bookmarked
                                     </div>
                                 {% else %}
-                                    <div class= "btn btn-sm btn-outline-secondary">
+                                    <div class="btn btn-sm btn-outline-secondary">
                                         <i class="fas fa-bookmark"></i> Bookmark
                                     </div>
                                 {% endif %}
@@ -73,7 +63,7 @@
                         </div>
                     </div>
                 </div>
-                <div>
+                <div class="mt-2">
                     <!-- Button -->
                     <a href="{% url 'news_detail' news_article.slug %}" class="btn btn-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
                         <i class="fas fa-arrow-right"></i>
