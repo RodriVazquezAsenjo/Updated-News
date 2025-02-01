@@ -30,7 +30,7 @@
                     </li>
                     {% if user.is_authenticated %}
                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'bookmark' %}">Bookmark</a>
+                            <a class="nav-link" href="{% url 'bookmark_list' %}">Bookmark</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link" href="{% url 'user_profile' username=user.username %}">Profile</a>

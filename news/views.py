@@ -40,22 +40,18 @@ def selected_news_article(request, slug):
         'comment_form': comment_form
     }
     return render(request, template, context)
-
+	
 @login_required
 def like(request, slug):
-	#likes logic
-    #obtain the object from NewsArticles where the slug is equal to the slug of the object. 
-	selected_news_article = get_object_or_404(NewsArticles, slug=slug)
-    #we filter the object and say that if the selected article's like list has the id from the user_profile
-	if selected_news_article.likes.filter(id=request.user.user_profile.id):
-        #then we remove the user_profile from the list
-		selected_news_article.likes.remove(request.user.user_profile)
-	else:
-        #otherwise, add the user_profile. 
-		selected_news_article.likes.add(request.user.user_profile)
-        #after this is done return it to the news_list page. 
-	return redirect('news_list')
-	
+    selected_news_article = get_object_or_404(NewsArticles, slug=slug)
+    if selected_news_article.likes.filter(id=request.user.user_profile.id):
+        selected_news_article.likes.remove(request.user.user_profile)
+    else:
+        selected_news_article.likes.add(request.user.user_profile)
+
+    referer = request.META.get('HTTP_REFERER', '/')
+    return redirect(referer)
+
 @login_required
 def bookmark(request, slug):
     selected_news_article = get_object_or_404(NewsArticles, slug=slug)
@@ -83,7 +79,7 @@ def add_article(request):
     else:
         form = AddArticleForm()
 
-    template = 'add_article.html'
+    template = 'news/add_article.html'
     context = {
         'form': form
     }
@@ -121,14 +117,14 @@ def profile_modifications(request, pk):
     }
     return render(request, template, context)
     
-def BookMark(request):
-	bookmarked_news_articles = NewsArticles.objects.filter(author__affiliated=organization)
+def bookmark_list(request):
+	bookmarked_news_articles = NewsArticles.objects.filter(bookmark=request.user.user_profile)
 	template = 'news/bookmark.html'
 	context = {
-		'title': FEED,
+		'title': 'BOOKMARK',
 		'bookmarked_news_articles': bookmarked_news_articles,
 		}
-	return(request, template, context)
+	return render(request, template, context)
     
 def all_organizations(request):
     organizations = Organizations.objects.all()
