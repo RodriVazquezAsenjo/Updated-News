@@ -5,6 +5,7 @@ from django_countries.fields import CountryField
 class Organizations(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=100, unique=True)
+    image = models.ImageField(upload_to='organization_images/', blank=True, null=True)
     description = models.TextField()
     foundation = models.DateField(null=True, blank=True)
     country = CountryField()
@@ -46,6 +47,7 @@ class UserProfile(models.Model):
 class NewsArticles(models.Model):
     title = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
+    image = models.ImageField(upload_to='news_articles_images/', blank=True, null=True)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(

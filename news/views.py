@@ -67,7 +67,7 @@ def bookmark(request, slug):
 @login_required
 def add_article(request):
     if request.method == 'POST':
-        form = AddArticleForm(request.POST)
+        form = AddArticleForm(request.POST, request.FILES)
         if form.is_valid():
             news_article = form.save(commit=False)
             news_article.author = request.user.user_profile
@@ -127,8 +127,11 @@ def bookmark_list(request):
 	return render(request, template, context)
     
 def all_organizations(request):
-    organizations = Organizations.objects.all()
-
+    query = request.GET.get('q', '')
+    if query:
+        organizations = Organizations.objects.filter(name__icontains=query)
+    else:
+        organizations = Organizations.objects.all()
     template = 'news/organization_list.html'
     context = {
         'page_title': 'Organizations',
@@ -152,7 +155,7 @@ def selected_organizations(request, slug):
 @login_required
 def add_organization(request):
     if request.method == 'POST':
-        form = OrganizationsForm(request.POST)
+        form = OrganizationsForm(request.POST, request.FILES)
         if form.is_valid():
             organization = form.save(commit=False)
             organization.slug = slugify(organization.name) 

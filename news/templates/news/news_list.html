@@ -18,7 +18,10 @@
     <!-- Card -->
     <div class="w-75 me-3"> 
         <div class="card">
-            <img src="{% static 'images/nobody.jpg' %}" class="card-img-top d-block w-100 border-bottom" alt="{{ article.title }}" style="max-height: 130px; object-fit: cover;">
+            <img src="{% if article.image %}{{ article.image.url }}{% else %}{% static 'images/nobody.jpg' %}{% endif %}" 
+                class="card-img-top d-block w-100 border-bottom" 
+                alt="{{ selected_news_article.title }}" 
+                style="max-height: 130px; object-fit: cover;">
             <div class="card-body">
                 <div class="d-flex gap-4 align-items-center justify-content-between">
                     <div class="d-flex flex-column">

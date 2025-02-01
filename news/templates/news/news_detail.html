@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% block content %}
+{% load static %}
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-8">
@@ -12,7 +13,10 @@
             </p>
 
             <!-- News Image (Optional) -->
-            <img src="https://via.placeholder.com/800x400" class="img-fluid rounded mb-4" alt="News Image">
+            <img src="{% if selected_news_article.image %}{{ selected_news_article.image.url }}{% else %}{% static 'images/nobody.jpg' %}{% endif %}" 
+                class="card-img-top d-block w-100 border-bottom" 
+                alt="{{ selected_news_article.title }}" 
+                style="object-fit: cover;">
             <div class="post-info d-flex align-items-center mb-4 gap-3">
                 <!-- Comments Section -->
                 <div class="comments-info text-muted">

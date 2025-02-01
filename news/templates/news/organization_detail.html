@@ -12,7 +12,10 @@
     <!-- Organization Details Card -->
     <div class="w-75 me-3"> 
         <div class="card">
-            <img src="static/images/nobody.jpg" class="card-img-top d-block w-100 border-bottom" alt="{{ organization.name }}" style="max-height: 130px; object-fit: cover;">
+            <img src="{% if organization.image %}{{ organization.image.url }}{% else %}{% static 'images/nobody.jpg' %}{% endif %}" 
+                class="card-img-top d-block w-100 border-bottom" 
+                alt="{{ organization.name }}" 
+                style="object-fit: cover;">
             <div class="card-body">
                 <h5 class="card-title mb-1 text-truncate" style="font-size: 1.25rem;">{{ organization.name }}</h5>
                 <h6 class="text-muted" style="font-size: 0.875rem;">Founded: {{ organization.founded }}</h6>

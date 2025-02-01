@@ -1,8 +1,14 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
+
+<!-- Search Form -->
 <div class="d-flex justify-content-between align-items-center p-3">
     <div class="display-4 text-decoration-underline">ORGANIZATIONS</div>
+    <form method="GET" action="{% url 'organizations_list' %}" class="d-flex">
+        <input type="text" name="q" class="form-control me-2" placeholder="Search organizations..." value="{{ request.GET.q }}">
+        <button type="submit" class="btn btn-dark">Search</button>
+    </form>
     <a href="{% url 'add_organization' %}" class="btn btn-dark btn-lg text-white">
         Add Organization
     </a>
@@ -14,7 +20,10 @@
     <!-- Card -->
     <div class="w-75 me-3"> 
         <div class="card">
-            <img src="{% static 'images/nobody.jpg' %}" class="card-img-top d-block w-100 border-bottom" alt="{{ organization.name }}" style="max-height: 130px; object-fit: cover;">
+            <img src="{% if organization.image %}{{ organization.image.url }}{% else %}{% static 'images/nobody.jpg' %}{% endif %}" 
+                class="card-img-top d-block w-100 border-bottom" 
+                alt="{{ organization.name }}" 
+                style="max-height: 130px; object-fit: cover;">
             <div class="card-body">
                 <div class="d-flex gap-4 align-items-center justify-content-between">
                     <div class="d-flex flex-column">

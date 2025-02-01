@@ -15,9 +15,9 @@ class UserProfileForm(forms.ModelForm):
 class AddArticleForm(forms.ModelForm):
     class Meta:
         model = NewsArticles
-        fields = ['title', 'content']
+        fields = ['title', 'content', 'image']
 
 class OrganizationsForm(forms.ModelForm):
     class Meta:
         model = Organizations
-        fields = ['name', 'description', 'foundation', 'country']
+        fields = ['name', 'description', 'foundation', 'country', 'image']
