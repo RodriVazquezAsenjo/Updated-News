@@ -71,7 +71,7 @@
                     <!-- Comment List -->
                     {% for comment in selected_news_article.comments.all %}
                         <div class="mb-3">
-                            <p><strong>{{ comment.commenter.user.user_profile }}</strong>: {{ comment.content }}</p>
+                            <p><strong>{{ comment.commenter }}</strong>: {{ comment.content }}</p>
                             <p class="text-muted small">{{ comment.created_at|date:"F j, Y, g:i a" }}</p>
                         </div>
                     {% empty %}

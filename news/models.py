@@ -6,9 +6,9 @@ class Organizations(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=100, unique=True)
     image = models.ImageField(upload_to='organization_images/', blank=True, null=True)
-    description = models.TextField()
+    description = models.TextField(null=True, blank=True)
     foundation = models.DateField(null=True, blank=True)
-    country = CountryField()
+    country = CountryField(null=True, blank=True)
 
     def __str__(self):
         return self.name
@@ -39,9 +39,6 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return self.user.username
-
-    def subscriber_count(self):
-        return self.subscriber.count()
 
 
 class NewsArticles(models.Model):
@@ -101,7 +98,7 @@ class Comment(models.Model):
     )
 
     def __str__(self):
-        return 'Comment {} by {}'.format(self.content, self.commenter.username)
+        return 'Comment {} by {}'.format(self.content, self.commenter)
 
 
     class Meta:
