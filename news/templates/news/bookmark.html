@@ -1,81 +1,88 @@
 {% extends 'base.html' %}
+
 {% block content %}
-    <div class="d-flex justify-content-between align-items-center p-3">
-        <div class="display-4 text-decoration-underline">BOOKMARK</div>
-    </div>
+    <div class="container-fluid p-3">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h1 class="display-4 text-decoration-underline">Bookmarked Articles</h1>
+        </div>
 
-    <div class="d-flex align-items-center pb-3"></div>
-
-    {% if bookmarked_news_articles %}
         <div class="row g-4">
-            {% for news_article in bookmarked_news_articles %}
-            <!-- CARD Layout -->
-            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                <div class="card">
-                    <!-- Article Image -->
-                    <img src="https://via.placeholder.com/800x400" class="card-img-top d-block w-100 border-bottom custom-img" alt="{{ news_article.title }}">
-                    <div class="card-body">
-                        <h5 class="card-title mb-1 text-truncate custom-title">{{ news_article.title }}</h5>
-                        <h6 class="text-muted custom-date">{{ news_article.created_at }}</h6>
+            {% if bookmarked_news_articles %}
+                {% for news_article in bookmarked_news_articles %}
+                    <!-- Article Card Layout -->
+                    <div class="col-12 col-md-6 col-lg-4">
+                        <div class="card shadow-sm">
+                            <!-- Article Image -->
+                            <img src="https://via.placeholder.com/800x400" class="card-img-top" alt="{{ news_article.title }}">
+
+                            <div class="card-body">
+                                <!-- Article Title and Date -->
+                                <h5 class="card-title text-truncate">{{ news_article.title }}</h5>
+                                <p class="card-text text-muted">{{ news_article.created_at|date:"F j, Y" }}</p>
+                            </div>
+
+                            <div class="card-footer d-flex justify-content-between align-items-center">
+                                <!-- Author Info -->
+                                <div class="author-info text-muted">
+                                    <small><i class="fas fa-user"></i> {{ news_article.author.user.username }}</small>
+                                </div>
+
+                                <!-- Comments Info -->
+                                <div class="comments-info text-muted">
+                                    <i class="fas fa-comments"></i> {{ news_article.comments.count }}
+                                </div>
+                            </div>
+
+                            <div class="post-info d-flex justify-content-between align-items-center mt-2">
+                                <!-- Likes Info -->
+                                <div class="likes-info">
+                                    <a href="{% url 'news_article_like' news_article.slug %}" aria-label="Like this article">
+                                        {% if request.user.user_profile in news_article.likes.all %}
+                                            <div class="btn btn-sm btn-secondary">
+                                                {{ news_article.total_likes }}
+                                                <i class="fas fa-thumbs-up"></i>
+                                            </div>
+                                        {% else %}
+                                            <div class="btn btn-sm btn-outline-secondary">
+                                                {{ news_article.total_likes }}
+                                                <i class="fas fa-thumbs-up"></i>
+                                            </div>
+                                        {% endif %}
+                                    </a>
+                                </div>
+
+                                <!-- Bookmark Info -->
+                                <div class="bookmark-info">
+                                    <a href="{% url 'news_article_bookmark' news_article.slug %}" aria-label="Bookmark this article">
+                                        {% if request.user.user_profile in news_article.bookmark.all %}
+                                            <div class="btn btn-sm btn-secondary">
+                                                <i class="fas fa-bookmark"></i> Bookmarked
+                                            </div>
+                                        {% else %}
+                                            <div class="btn btn-sm btn-outline-secondary">
+                                                <i class="fas fa-bookmark"></i> Bookmark
+                                            </div>
+                                        {% endif %}
+                                    </a>
+                                </div>
+                            </div>
+
+                            <!-- View Article Button -->
+                            <div class="mt-2 text-center">
+                                <a href="{% url 'news_detail' news_article.slug %}" class="btn btn-dark rounded-circle">
+                                    <i class="fas fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
                     </div>
-                    
-                    <div class="post-info d-flex flex-column flex-md-row align-items-center gap-3 mt-3">
-                        <!-- Author Info -->
-                        <div class="author-info text-muted">
-                            <small><i class="fas fa-user"></i> {{ news_article.author.user.username }}</small>
-                        </div>
-
-                        <!-- Comments Info -->
-                        <div class="comments-info text-muted">
-                            <i class="fas fa-comments"></i> {{ news_article.comments.count }}
-                        </div>
-
-                        <!-- Likes Info (Conditionally styled button based on user's like status) -->
-                        <div class="likes-info">
-                            <a href="{% url 'news_article_like' news_article.slug %}" aria-label="Like this article">  
-                                {% if request.user.user_profile in news_article.likes.all %}
-                                    <div class="btn btn-sm btn-secondary">
-                                        {{ news_article.total_likes }}
-                                        <i class="fas fa-thumbs-up"></i>
-                                    </div>
-                                {% else %}
-                                    <div class="btn btn-sm btn-outline-secondary">
-                                        {{ news_article.total_likes }}
-                                        <i class="fas fa-thumbs-up"></i>
-                                    </div>
-                                {% endif %}
-                            </a>
-                        </div>
-
-                        <!-- Bookmark Info (Conditionally styled button based on user's bookmark status) -->
-                        <div class="bookmark-info">
-                            <a href="{% url 'news_article_bookmark' news_article.slug %}" aria-label="Bookmark this article">
-                                {% if request.user.user_profile in news_article.bookmark.all %}
-                                    <div class="btn btn-sm btn-secondary">
-                                        <i class="fas fa-bookmark"></i> Bookmarked
-                                    </div>
-                                {% else %}
-                                    <div class="btn btn-sm btn-outline-secondary">
-                                        <i class="fas fa-bookmark"></i> Bookmark
-                                    </div>
-                                {% endif %}
-                            </a>
-                        </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-12">
+                    <div class="alert alert-info text-center">
+                        <strong>No bookmarks yet!</strong> Start exploring and bookmarking articles.
                     </div>
                 </div>
-
-                <!-- View Article Button -->
-                <div class="mt-2">
-                    <a href="{% url 'news_detail' news_article.slug %}" class="btn btn-dark rounded-circle d-flex align-items-center justify-content-center custom-btn">
-                        <i class="fas fa-arrow-right"></i>
-                    </a>
-                </div>
-            </div>
-            {% endfor %}
+            {% endif %}
         </div>
-    {% else %}
-        <div class="alert alert-info text-center w-75 me-3">
-            <strong>No bookmarks yet!</strong>
-        </div>
-    {% endif %}
+    </div>
 {% endblock content %}

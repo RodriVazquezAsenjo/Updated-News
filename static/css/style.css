@@ -1,15 +1,27 @@
+/*
+* Prefixed by https://autoprefixer.github.io
+* PostCSS: v8.4.14,
+* Autoprefixer: v10.4.7
+* Browsers: last 4 version
+*/
+
 /* Style for the message container */
 .messages {
     position: fixed;         /* Fix the element relative to the viewport */
     top: 20px;               /* 20px from the top */
     left: 50%;               /* Center it horizontally */
-    transform: translateX(-50%); /* Adjust the position to center the container */
+    -webkit-transform: translateX(-50%);
+        -ms-transform: translateX(-50%);
+            transform: translateX(-50%); /* Adjust the position to center the container */
     z-index: 9999;           /* Ensure it appears above other content */
     width: auto;             /* Auto width to fit the content */
     max-width: 80%;          /* Limit the width of the message container */
     padding: 10px 20px;      /* Padding inside the container */
     border-radius: 5px;      /* Rounded corners */
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow for better visibility */
+    -webkit-box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Shadow for better visibility */
+    -webkit-transition: opacity 0.5s ease;
+    -o-transition: opacity 0.5s ease;
     transition: opacity 0.5s ease; /* Fade-out effect */
     display: block;          /* Ensure it's visible */
     margin: 0;               /* Remove any margins */
@@ -59,7 +71,8 @@
 /* Custom image styling */
 .custom-img {
     max-height: 130px;
-    object-fit: cover;
+    -o-object-fit: cover;
+       object-fit: cover;
 }
 
 /* Custom title styling */
@@ -80,7 +93,8 @@
 }
 
 .custom-detail-img {
-    object-fit: cover;
+    -o-object-fit: cover;
+       object-fit: cover;
 }
 
 .custom-country {
@@ -90,5 +104,6 @@
 .custom-text {
     height: 60px;
     overflow: hidden;
-    text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+       text-overflow: ellipsis;
 }
