@@ -198,7 +198,7 @@ specific entities.
      
 
 ![HomePage](documentation/all_news_articles_wireframe.jpeg)
-![ArticlePage](documentation/news_articles_detail_wireframe.jpeg)
+![ArticlePage](documentation/news_article_detail_wireframe.jpeg)
 ![ProfilePage](documentation/profile_wireframe.jpeg)
 
 ---
