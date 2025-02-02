@@ -5,26 +5,29 @@
 <!-- Organization Detail Title -->
 <div class="d-flex justify-content-between align-items-center p-3">
     <div class="display-4 text-decoration-underline">{{ organization.name }}</div>
+    <!-- Back to Organization List Button -->
     <a href="{% url 'organizations_list' %}" class="btn btn-dark">Back to Organizations List</a>
 </div>
 
+<!-- Organization Details Section -->
 <div class="d-flex align-items-center pb-3">
-    <!-- Organization Details Card -->
+    <!-- Organization Info Card -->
     <div class="w-75 me-3"> 
         <div class="card">
+            <!-- Organization Image -->
             <img src="{% if organization.image %}{{ organization.image.url }}{% else %}{% static 'images/nobody.jpg' %}{% endif %}" 
-                class="card-img-top d-block w-100 border-bottom" 
-                alt="{{ organization.name }}" 
-                style="object-fit: cover;">
+                class="card-img-top d-block w-100 border-bottom custom-detail-img" 
+                alt="{{ organization.name }}">
             <div class="card-body">
-                <h5 class="card-title mb-1 text-truncate" style="font-size: 1.25rem;">{{ organization.name }}</h5>
-                <h6 class="text-muted" style="font-size: 0.875rem;">Founded: {{ organization.founded }}</h6>
-                <p class="text-muted" style="font-size: 0.875rem;">Country: {{ organization.country }}</p>
+                <!-- Organization Name, Founded Date, Country -->
+                <h5 class="card-title mb-1 text-truncate custom-title">{{ organization.name }}</h5>
+                <h6 class="text-muted custom-date">Founded: {{ organization.founded }}</h6>
+                <p class="text-muted custom-country">Country: {{ organization.country }}</p>
                 <p class="card-text">{{ organization.description }}</p>
             </div>
         </div>
     
-        <!-- Authors Section -->
+        <!-- Authors Info -->
         <div class="authors-info text-muted">
             <small><i class="fas fa-pencil-alt"></i> Authors affiliated: 
                 {{ organization.total_authors }}
@@ -33,68 +36,72 @@
     </div>
 </div>
 
+<!-- Related Articles Section -->
 <div>
     <div class="d-flex justify-content-between align-items-center p-3">
         <div class="display-6 text-decoration-underline">RELATED ARTICLES:</div>
     </div>
+
+    <!-- Loop through related news articles -->
     {% for news_article in news_articles_from_organization %}
-    <!-- CARD Layout -->
+    <!-- Card for each related article -->
     <div class="d-flex align-items-center pb-3">
-        <!-- Card -->
         <div class="w-75 me-3"> 
             <div class="card">
-                <img src="https://via.placeholder.com/800x400" class="card-img-top d-block w-100 border-bottom" alt="{{ news_article.title }}" style="max-height: 130px; object-fit: cover;">
+                <!-- Article Image -->
+                <img src="{% if organization.image %}{{ organization.image.url }}{% else %}{% static 'images/nobody.jpg' %}{% endif %}" class="card-img-top d-block w-100 border-bottom custom-img" alt="{{ news_article.title }}">
                 <div class="card-body">
                     <div class="d-flex gap-4 align-items-center justify-content-between">
                         <div class="d-flex flex-column">
-                            <h5 class="card-title mb-1 text-truncate" style="font-size: 1.25rem;">{{ news_article.title }}</h5>
-                            <h6 class="text-muted" style="font-size: 0.875rem;">{{ news_article.created_at }}</h6>
+                            <!-- Article Title and Date -->
+                            <h5 class="card-title mb-1 text-truncate custom-title">{{ news_article.title }}</h5>
+                            <h6 class="text-muted custom-date">{{ news_article.created_at }}</h6>
                         </div>
                     </div>
+                    <!-- Article Preview -->
                     <p class="card-text">{{ news_article.content|truncatechars:250 }}</p>
                 </div>
             </div>
         
+            <!-- Article Info: Author, Comments, Likes, and Bookmark -->
             <div class="post-info d-flex align-items-center mt-3 gap-3">
-                <!-- Author Section -->
+                <!-- Author Info -->
                 <div class="author-info text-muted">
                     <small><i class="fas fa-user"></i> {{ news_article.author.user.username }}</small>
                 </div>
 
-                <!-- Comments Section -->
+                <!-- Comments Info -->
                 <div class="comments-info text-muted">
                     <i class="fas fa-comments"></i>
                     {{ news_article.comments.count }} Comments
                 </div>
-        
-        
-                <!-- Likes Section -->
+
+                <!-- Likes Info (Conditionally styled button based on user's like status) -->
                 <div class="likes-info">
                     <a href="{% url 'news_article_like' news_article.slug %}" aria-label="Like this article">  
-                            {% if request.user.user_profile in news_article.likes.all %}
-                                <div class= "btn btn-sm btn-secondary">
-                                    {{news_article.total_likes}}
-                                    <i class="fas fa-thumbs-up"></i>
-                                </div>
-                            {% else %}
-                                <div class= "btn btn-sm btn-outline-secondary">
-                                    {{news_article.total_likes}}
-                                    <i class="fas fa-thumbs-up"></i>
-                                </div>
-                            {% endif %}
+                        {% if request.user.user_profile in news_article.likes.all %}
+                            <div class="btn btn-sm btn-secondary">
+                                {{news_article.total_likes}}
+                                <i class="fas fa-thumbs-up"></i>
+                            </div>
+                        {% else %}
+                            <div class="btn btn-sm btn-outline-secondary">
+                                {{news_article.total_likes}}
+                                <i class="fas fa-thumbs-up"></i>
+                            </div>
+                        {% endif %}
                     </a>
                 </div>
 
-                <!-- Bookmark Section -->
-                <div class='bookmark-info'>
-                    
+                <!-- Bookmark Info (Conditionally styled button based on user's bookmark status) -->
+                <div class="bookmark-info">
                     <a href="{% url 'news_article_bookmark' news_article.slug %}" aria-label="Bookmark this article">
                         {% if request.user.user_profile in news_article.bookmark.all %}
-                            <div class= "btn btn-sm btn-secondary">
+                            <div class="btn btn-sm btn-secondary">
                                 <i class="fas fa-bookmark"></i> Bookmarked
                             </div>
                         {% else %}
-                            <div class= "btn btn-sm btn-outline-secondary">
+                            <div class="btn btn-sm btn-outline-secondary">
                                 <i class="fas fa-bookmark"></i> Bookmark
                             </div>
                         {% endif %}
@@ -102,9 +109,10 @@
                 </div>
             </div>
         </div>
+
+        <!-- View Article Button -->
         <div>
-            <!-- Button -->
-            <a href="{% url 'news_detail' news_article.slug %}" class="btn btn-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+            <a href="{% url 'news_detail' news_article.slug %}" class="btn btn-dark rounded-circle d-flex align-items-center justify-content-center custom-btn">
                 <i class="fas fa-arrow-right"></i>
             </a>
         </div>

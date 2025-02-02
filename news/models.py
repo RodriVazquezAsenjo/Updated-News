@@ -2,10 +2,15 @@ from django.db import models
 from django.contrib.auth.models import User
 from django_countries.fields import CountryField
 
+
 class Organizations(models.Model):
     name = models.CharField(max_length=100, unique=True)
     slug = models.SlugField(max_length=100, unique=True)
-    image = models.ImageField(upload_to='organization_images/', blank=True, null=True)
+    image = models.ImageField(
+        upload_to='organization_images/',
+        blank=True,
+        null=True
+        )
     description = models.TextField(null=True, blank=True)
     foundation = models.DateField(null=True, blank=True)
     country = CountryField(null=True, blank=True)
@@ -22,13 +27,13 @@ class Organizations(models.Model):
 
 class UserProfile(models.Model):
     user = models.OneToOneField(
-        User, 
+        User,
         on_delete=models.CASCADE,
         related_name='user_profile'
     )
     affiliated = models.ForeignKey(
-        Organizations, 
-        on_delete=models.SET_NULL, 
+        Organizations,
+        on_delete=models.SET_NULL,
         null=True,
         blank=True,
         related_name='affiliated_users'
@@ -44,7 +49,11 @@ class UserProfile(models.Model):
 class NewsArticles(models.Model):
     title = models.CharField(max_length=200, unique=True)
     slug = models.SlugField(max_length=200, unique=True)
-    image = models.ImageField(upload_to='news_articles_images/', blank=True, null=True)
+    image = models.ImageField(
+        upload_to='news_articles_images/',
+        blank=True,
+        null=True
+        )
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     author = models.ForeignKey(
@@ -63,9 +72,9 @@ class NewsArticles(models.Model):
         blank=True,
     )
     organization = models.ForeignKey(
-        Organizations, 
+        Organizations,
         on_delete=models.CASCADE,
-        null=True, 
+        null=True,
         blank=True,
         related_name='organization'
     )
@@ -75,7 +84,7 @@ class NewsArticles(models.Model):
 
     def total_likes(self):
         return self.likes.count()
-    
+
     def total_comments(self):
         return self.comments.count()
 
@@ -99,7 +108,6 @@ class Comment(models.Model):
 
     def __str__(self):
         return 'Comment {} by {}'.format(self.content, self.commenter)
-
 
     class Meta:
         ordering = ["-created_at"]

@@ -2,11 +2,18 @@
 {% block content %}
 {% load static %}
 
-
+    <!-- Page Title for Adding Article -->
     <h1>Add Article</h1>
+
+    <!-- Form to Add Article -->
     <form method="POST" enctype="multipart/form-data">
+        <!-- CSRF Token for security purposes -->
         {% csrf_token %}
+        
+        <!-- Render the form fields dynamically from the form instance -->
         {{ form.as_p }}
+        
+        <!-- Submit Button to add the article -->
         <button type="submit" class="btn btn-dark">Add Article</button>
     </form>
 

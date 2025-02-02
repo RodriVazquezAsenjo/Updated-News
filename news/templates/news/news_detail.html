@@ -1,6 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
 {% load static %}
+
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+                <button type="button" class="dismiss-message">×</button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
 <div class="container mt-4">
     <div class="row">
         <div class="col-md-8">
@@ -8,81 +20,72 @@
             <h1 class="display-4 mb-3">{{ selected_news_article.title }}</h1>
 
             <!-- Author and Date -->
-            <p class="text-muted mb-4">
-                By {{ selected_news_article.author }} | Published on {{ selected_news_article.created_at|date:"F j, Y" }}
+            <p class="text-muted">
+                <i class="fas fa-user"></i> {{ selected_news_article.author }}  
+                | <i class="far fa-calendar-alt"></i> {{ selected_news_article.created_at|date:"F j, Y" }}
             </p>
 
             <!-- News Image (Optional) -->
             <img src="{% if selected_news_article.image %}{{ selected_news_article.image.url }}{% else %}{% static 'images/nobody.jpg' %}{% endif %}" 
-                class="card-img-top d-block w-100 border-bottom" 
-                alt="{{ selected_news_article.title }}" 
-                style="object-fit: cover;">
-            <div class="post-info d-flex align-items-center mb-4 gap-3">
-                <!-- Comments Section -->
-                <div class="comments-info text-muted">
-                    <i class="fas fa-comments"></i>
-                    {{ selected_news_article.comments.count }} Comments
+                class="img-fluid rounded shadow-sm mb-4" 
+                alt="{{ selected_news_article.title }}">
+
+            <!-- Post Info (Likes, Comments, Bookmark) -->
+            <div class="d-flex align-items-center gap-3 mb-3">
+                <!-- Comments -->
+                <div class="text-muted">
+                    <i class="fas fa-comments"></i> {{ selected_news_article.comments.count }} Comments
                 </div>
-                <!-- Likes Section -->
-                <div class="likes-info">
-                    <a href="{% url 'news_article_like' selected_news_article.slug %}" aria-label="Like this article">  
-                            {% if request.user.user_profile in article.likes.all %}
-                                <div class= "btn btn-sm btn-secondary">
-                                    {{selected_news_article.total_likes}}
-                                    <i class="fas fa-thumbs-up"></i>
-                                </div>
-                            {% else %}
-                                <div class= "btn btn-sm btn-outline-secondary">
-                                    {{selected_news_article.total_likes}}
-                                    <i class="fas fa-thumbs-up"></i>
-                                </div>
-                            {% endif %}
+
+                <!-- Likes -->
+                <div>
+                    <a href="{% url 'news_article_like' selected_news_article.slug %}" class="btn btn-sm {% if request.user.user_profile in selected_news_article.likes.all %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                        {{ selected_news_article.total_likes }} <i class="fas fa-thumbs-up"></i>
                     </a>
                 </div>
-                <!-- Bookmark Section -->
-                <div class='bookmark-info'>
-                    
-                    <a href="{% url 'news_article_bookmark' selected_news_article.slug %}" aria-label="Bookmark this article">
-                        {% if request.user.user_profile in selected_news_article.bookmark.all %}
-                            <div class= "btn btn-sm btn-secondary">
-                                <i class="fas fa-bookmark"></i> Bookmarked
-                            </div>
-                        {% else %}
-                            <div class= "btn btn-sm btn-outline-secondary">
-                                <i class="fas fa-bookmark"></i> Bookmark
-                            </div>
-                        {% endif %}
+
+                <!-- Bookmark -->
+                <div>
+                    <a href="{% url 'news_article_bookmark' selected_news_article.slug %}" class="btn btn-sm {% if request.user.user_profile in selected_news_article.bookmark.all %}btn-secondary{% else %}btn-outline-secondary{% endif %}">
+                        <i class="fas fa-bookmark"></i> {% if request.user.user_profile in selected_news_article.bookmark.all %}Bookmarked{% else %}Bookmark{% endif %}
                     </a>
                 </div>
             </div>
+
             <!-- News Content -->
             <div class="mb-4">
                 <p>{{ selected_news_article.content }}</p>
             </div>
         </div>
+
         {% if user.is_authenticated %}
         <!-- Comments Section -->
         <div class="col-md-4">
-            <div class="card">
-                <div class="card-header">
-                    <h5>Comments</h5>
+            <div class="card shadow-sm">
+                <div class="card-header bg-dark text-white">
+                    <h5 class="mb-0">Comments</h5>
                 </div>
                 <div class="card-body">
-                    <!-- Comment List -->
-                    {% for comment in selected_news_article.comments.all %}
-                        <div class="mb-3">
-                            <p><strong>{{ comment.commenter }}</strong>: {{ comment.content }}</p>
-                            <p class="text-muted small">{{ comment.created_at|date:"F j, Y, g:i a" }}</p>
-                        </div>
-                    {% empty %}
-                        <p>No comments yet. Be the first to comment!</p>
-                    {% endfor %}
+                    {% if selected_news_article.comments.all %}
+                        {% for comment in selected_news_article.comments.all %}
+                            <div class="p-2 {% cycle 'bg-light' '' %} rounded">
+                                <p class="mb-1"><strong>{{ comment.commenter }}</strong></p>
+                                <p class="small text-muted mb-1">{{ comment.created_at|date:"F j, Y, g:i a" }}</p>
+                                <p>{{ comment.content }}</p>
+                            </div>
+                            {% if not forloop.last %}
+                                <hr class="my-2">
+                            {% endif %}
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted text-center">No comments yet. Be the first to comment!</p>
+                    {% endif %}
 
-                    <!-- Add Comment Form -->
-                    <form id="comment_form" method="post">
+                    <!-- Add a new comment form -->
+                    <form id="comment_form" method="post" class="mt-3">
                         {{ comment_form }}
                         {% csrf_token %}
-                        <button id="submitButton" type="submit" class="btn btn-dark">Post Comment</button>
+                        <button id="submitButton" type="submit" class="btn btn-dark w-100">Post Comment</button>
                     </form>
                 </div>
             </div>
@@ -90,4 +93,5 @@
         {% endif %}
     </div>
 </div>
+
 {% endblock %}

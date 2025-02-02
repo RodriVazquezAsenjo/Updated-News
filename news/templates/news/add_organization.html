@@ -2,11 +2,18 @@
 {% block content %}
 {% load static %}
 
-
+    <!-- Page Title -->
     <h1>Add Organization</h1>
+
+    <!-- Form to Add Organization -->
     <form method="POST" enctype="multipart/form-data">
+        <!-- CSRF Token to prevent CSRF attacks -->
         {% csrf_token %}
+        
+        <!-- Render the form fields dynamically from the form instance -->
         {{ form.as_p }}
+        
+        <!-- Submit Button to add the organization -->
         <button type="submit" class="btn btn-dark">Add Organization</button>
     </form>
 

@@ -2,9 +2,14 @@
 {% block content %}
 {% load static %}
 
+<!-- Deletion Confirmation Section -->
 <h2>Are you sure you want to delete this article?</h2>
-<p>{{ news_article.title }}</p>
-<p>{{ news_article.content }}</p>
+
+<!-- Display Article Title and Content -->
+<p><strong>Title:</strong> {{ news_article.title }}</p>
+<p><strong>Content:</strong> {{ news_article.content|truncatechars:200 }}</p> <!-- Truncating content for preview -->
+
+<!-- Confirmation Form -->
 <form method="POST">
     {% csrf_token %}
     <button type="submit" class="btn btn-danger">Yes, Delete</button>

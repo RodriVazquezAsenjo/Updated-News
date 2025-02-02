@@ -12,27 +12,27 @@
             <!-- CARD Layout -->
             <div class="col-12 col-sm-6 col-md-4 col-lg-3">
                 <div class="card">
-                    <img src="https://via.placeholder.com/800x400" class="card-img-top d-block w-100 border-bottom" alt="{{ news_article.title }}" style="max-height: 130px; object-fit: cover;">
+                    <!-- Article Image -->
+                    <img src="https://via.placeholder.com/800x400" class="card-img-top d-block w-100 border-bottom custom-img" alt="{{ news_article.title }}">
                     <div class="card-body">
-                        <h5 class="card-title mb-1 text-truncate" style="font-size: 1.25rem;">{{ news_article.title }}</h5>
-                        <h6 class="text-muted" style="font-size: 0.875rem;">{{ news_article.created_at }}</h6>
-                        <p class="card-text">{{ news_article.content|truncatechars:250 }}</p>
+                        <h5 class="card-title mb-1 text-truncate custom-title">{{ news_article.title }}</h5>
+                        <h6 class="text-muted custom-date">{{ news_article.created_at }}</h6>
                     </div>
                     
                     <div class="post-info d-flex flex-column flex-md-row align-items-center gap-3 mt-3">
-                        <!-- Author Section -->
+                        <!-- Author Info -->
                         <div class="author-info text-muted">
                             <small><i class="fas fa-user"></i> {{ news_article.author.user.username }}</small>
                         </div>
 
-                        <!-- Comments Section -->
+                        <!-- Comments Info -->
                         <div class="comments-info text-muted">
                             <i class="fas fa-comments"></i> {{ news_article.comments.count }}
                         </div>
 
-                        <!-- Likes Section -->
+                        <!-- Likes Info (Conditionally styled button based on user's like status) -->
                         <div class="likes-info">
-                            <a href="{% url 'news_article_like' news_article.slug %}" aria-label="Like this article">
+                            <a href="{% url 'news_article_like' news_article.slug %}" aria-label="Like this article">  
                                 {% if request.user.user_profile in news_article.likes.all %}
                                     <div class="btn btn-sm btn-secondary">
                                         {{ news_article.total_likes }}
@@ -47,7 +47,7 @@
                             </a>
                         </div>
 
-                        <!-- Bookmark Section -->
+                        <!-- Bookmark Info (Conditionally styled button based on user's bookmark status) -->
                         <div class="bookmark-info">
                             <a href="{% url 'news_article_bookmark' news_article.slug %}" aria-label="Bookmark this article">
                                 {% if request.user.user_profile in news_article.bookmark.all %}
@@ -63,9 +63,10 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- View Article Button -->
                 <div class="mt-2">
-                    <!-- Button -->
-                    <a href="{% url 'news_detail' news_article.slug %}" class="btn btn-dark rounded-circle d-flex align-items-center justify-content-center" style="width: 50px; height: 50px;">
+                    <a href="{% url 'news_detail' news_article.slug %}" class="btn btn-dark rounded-circle d-flex align-items-center justify-content-center custom-btn">
                         <i class="fas fa-arrow-right"></i>
                     </a>
                 </div>
@@ -74,7 +75,7 @@
         </div>
     {% else %}
         <div class="alert alert-info text-center w-75 me-3">
-            <strong>No articles saved for later!</strong>
+            <strong>No bookmarks yet!</strong>
         </div>
     {% endif %}
 {% endblock content %}

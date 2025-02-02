@@ -2,45 +2,64 @@
 {% block content %}
 {% load static %}
 
-<!-- Search Form -->
+<!-- Display messages if any -->
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert alert-{{ message.tags }}">
+                {{ message }}
+                <button type="button" class="dismiss-message">×</button>
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+<!-- Title & Action Buttons -->
 <div class="d-flex justify-content-between align-items-center p-3 flex-wrap">
-    <div class="display-4 text-decoration-underline mb-2">ORGANIZATIONS</div>
+    <!-- Page Title -->
+    <h2 class="display-6 text-decoration-underline mb-2">Organizations</h2>
+
+    <!-- Search Form -->
     <form method="GET" action="{% url 'organizations_list' %}" class="d-flex w-100 w-md-auto">
         <input type="text" name="q" class="form-control me-2" placeholder="Search organizations..." value="{{ request.GET.q }}">
-        <button type="submit" class="btn btn-dark">Search</button>
+        <button type="submit" class="btn btn-dark rounded-circle d-flex align-items-center justify-content-center custom-btn">
+            <i class="fas fa-search"></i>
+        </button>
     </form>
-    <a href="{% url 'add_organization' %}" class="btn btn-dark btn-lg text-white mt-2 mt-md-0">
+</div>
+
+<!-- Add Organization Button -->
+<div class="text-end mb-3">
+    <a href="{% url 'add_organization' %}" class="btn btn-dark btn-lg text-white">
         Add Organization
     </a>
 </div>
 
+<!-- Loop through each organization and display in cards -->
 {% for organization in organizations %}
-<!-- CARD Layout -->
+<!-- Organization Card Layout -->
 <div class="d-flex flex-column flex-md-row pb-3 align-items-center">
-    <!-- Card -->
+    <!-- Card for Organization -->
     <div class="w-100 w-md-75 me-3"> 
         <div class="card">
             <img src="{% if organization.image %}{{ organization.image.url }}{% else %}{% static 'images/nobody.jpg' %}{% endif %}" 
-                class="card-img-top d-block w-100 border-bottom" 
-                alt="{{ organization.name }}" 
-                style="max-height: 130px; object-fit: cover;">
+                 class="card-img-top d-block w-100 border-bottom custom-img" 
+                 alt="{{ organization.name }}">
             <div class="card-body">
-                <div class="d-flex flex-column flex-md-row gap-4 align-items-start justify-content-between">
-                    <div class="d-flex flex-column">
-                        <h5 class="card-title mb-1 text-truncate" style="font-size: 1.25rem;">{{ organization.name }}</h5>
-                        <h6 class="text-muted" style="font-size: 0.875rem;">{{ organization.country }}, {{ organization.founded }}</h6>
-                    </div>
-                </div>
+                <h5 class="card-title mb-1 text-truncate custom-title">{{ organization.name }}</h5>
+                <h6 class="text-muted custom-date">{{ organization.country }}, {{ organization.founded }}</h6>
                 <p class="card-text">{{ organization.description|truncatechars:250 }}</p>
             </div>
         </div>
     </div>
-   
-    <!-- Button -->
-    <a href="{% url 'organization_detail' organization.slug %}" class="btn btn-dark rounded-circle d-flex align-items-center justify-content-center mt-3 mt-md-0" style="width: 50px; height: 50px;">
+
+    <!-- View Organization Button -->
+    <a href="{% url 'organization_detail' organization.slug %}" class="btn btn-dark rounded-circle d-flex align-items-center justify-content-center custom-btn mt-3 mt-md-0">
         <i class="fas fa-arrow-right"></i>
     </a>
 </div>
+{% empty %}
+    <p class="text-center mt-4">No organizations found.</p>
 {% endfor %}
 
 {% endblock content %}

@@ -7,15 +7,18 @@ class CommentForm(forms.ModelForm):
         model = Comment
         fields = ['content']
 
+
 class UserProfileForm(forms.ModelForm):
     class Meta:
         model = UserProfile
         fields = ['affiliated', 'nationality', 'bio']
 
+
 class AddArticleForm(forms.ModelForm):
     class Meta:
         model = NewsArticles
         fields = ['title', 'content', 'image']
+
 
 class OrganizationsForm(forms.ModelForm):
     class Meta:
