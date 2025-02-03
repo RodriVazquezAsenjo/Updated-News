@@ -17,9 +17,9 @@ specific entities.
 ### Ideal Client
 - **Business**: This platform is ideal for news organizations, content creators, and companies looking to engage their audience with real-time news, user interactions, and personalized content feeds.
   
-- **Visitors to the Website**: The target audience includes individuals who want to stay updated with news in specific fields, ranging from technology and politics to sports and entertainment. Visitors can browse through a list of articles or narrow down results by category or organization.
+- **Visitors to the Website**: The target audience includes individuals who want to stay updated with news in specific fields, ranging from technology and politics to sports and entertainment. Visitors can browse through a list of articles or narrow down results by organization.
 
-- **Client Stories**: A typical user could be someone looking for the latest tech news and filtering through articles from affiliated organizations. An authenticated user could engage by liking articles, leaving comments, or bookmarking them for later reading.
+- **Client Stories**: A typical user could be someone looking for the latest tech news and filtering through articles from organizations. An authenticated user could engage by liking articles, leaving comments, or bookmarking them for later reading.
 
 # User Stories and Acceptance Criteria
 
@@ -28,14 +28,14 @@ specific entities.
    - User can create a profile with details like bio, nationality, and affiliation with an organization.
    - Users are linked to their profile through the `UserProfile` model.
      #### Criteria met with:
-     - **Feature**: Add User Profile
+     - **Feature**: Sign Up
      - **Feature**: Profile Modifications
      - **Feature**: User Profile Integration in News Articles and Comments
 
 ### 2. **As an authenticated user, I want to see news articles that I can like, comment on, and bookmark, so I can interact with the content.**
    **Acceptance Criteria:**
    - User can view news articles, like them, comment on them, and bookmark them.
-   - Articles display the number of likes, comments, and bookmarks.
+   - Articles display the number of likes, comments, and whether or not the authenticated user has bookmarked the article.
    - A user can interact with articles without creating them.
      #### Criteria met with:
      - **Feature**: View All News Articles
@@ -73,7 +73,7 @@ specific entities.
    - Users can search for articles by title or content.
    - Search results show matching articles.
      #### Criteria met with:
-     - **Feature**: Search Functionality for News Articles (implied, could be added with a search bar feature)
+     - **Feature**: Search Functionality for News Articles (Future feature)
 
 ### 7. **As a user, I want to see an image with each news article, so I can better understand the content before reading.**
    **Acceptance Criteria:**
@@ -96,7 +96,6 @@ specific entities.
    - The number of users who have bookmarked an article is displayed.
      #### Criteria met with:
      - **Feature**: Bookmark Articles
-     - **Feature**: Display Total Bookmarks
 
 ## 5 Planes of UX Design (as this is a fictious project the steps below go beyond what is achievable as a educational project):
 
@@ -180,7 +179,6 @@ specific entities.
 1. **Homepage Wireframe**:
    - Navigation bar with sections like Home, News Feed, Organizations, and Profile.
    - A list of all news articles with brief previews and links to full articles.
-   - Option to filter by organization or news category.
    
 2. **News Article Page**:
    - Article title, content, and images.
@@ -210,7 +208,7 @@ specific entities.
 
 ## 1. User Authentication & Profile Management
 1. **Login and Registration**
-   - (Assumed, not shown in views but necessary for full functionality).
+   - (Not shown in views but necessary for full functionality, using the allauth import).
 
 2. **User Profile**
    - View user's profile with personal information and all their authored news articles.
@@ -288,12 +286,12 @@ specific entities.
 ## 7 .Data Filtering and Sorting
 1. **Search and Filter**
    - Search for organizations by name.
-   - Possibly filter or sort articles or organizations by date, relevance, or popularity.
 
 ## 8. Authorization and Access Control
 1. **Authorization Enforcement**
    - Ensure that only authenticated users can add articles, bookmark, like, and comment.
    - Only allow users to edit or delete their own articles.
+   - SuperUser can provide admin status to key users to view the total number of authors affiliated to an organization.
 
 2. **Access Control**
    - Prevent unauthorized users from viewing/editing other users' data.
@@ -380,7 +378,6 @@ specific entities.
   
 - **Testing**:
   - Pytest for backend tests (unit tests and integration tests).
-  - Jest and Selenium for frontend and end-to-end testing.
 
 ---
 
@@ -458,20 +455,6 @@ On the Create New App page, choose a unique name for your application, select th
 
 Once your app is created, you’ll land on the app’s configuration page. You’ll need to configure settings on the 
 Settings and Deploy tabs.
-
-Setting Environment Variables:
-
-Go to the Settings tab, scroll down to the Config Vars section, and click Reveal Config Vars.
-In the key field, enter 'CREDS', and in the value field, paste the content of your creds.json file (which contains
-your credentials for accessing the Google API). Then, click Add. Instructions for generating the creds.json file 
-are available in the Google API and Spreadsheet Setup section above.
-
-Configuring Buildpacks:
-
-Still in the Settings tab, scroll down to the Buildpacks section.
-Click Add buildpack, select Python, and save the changes.
-Add another buildpack, select Node.js, and save the changes again. Make sure Python is listed first, followed 
-by Node.js.
 
 Linking with GitHub for Deployment:
 
