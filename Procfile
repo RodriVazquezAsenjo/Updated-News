@@ -1,1 +1,1 @@
-web: gunicorn updated_news.wsgi:aplication --log-file -
+web: gunicorn updated_news.wsgi:application --log-file -
