@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
+{% load cloudinary %}
 
 <!-- Display messages if any -->
 {% if messages %}
@@ -42,7 +43,7 @@
     <!-- Card for Organization -->
     <div class="w-100 w-md-75 me-3"> 
         <div class="card">
-            <img src="{% if organization.image %}{{ organization.image.url }}{% else %}{% static 'images/nobody.jpg' %}{% endif %}" 
+            <img src="{% if organization.image %}{% cloudinary_url organization.image %}{% else %}{% static 'images/nobody.jpg' %}{% endif %}" 
                  class="card-img-top d-block w-100 border-bottom custom-img" 
                  alt="{{ organization.name }}">
             <div class="card-body">

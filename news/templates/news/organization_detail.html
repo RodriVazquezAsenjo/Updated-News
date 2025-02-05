@@ -1,6 +1,8 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
+{% load cloudinary %}
+
 
 <!-- Organization Detail Title -->
 <div class="d-flex justify-content-between align-items-center p-3">
@@ -15,13 +17,13 @@
     <div class="w-75 me-3"> 
         <div class="card">
             <!-- Organization Image -->
-            <img src="{% if organization.image %}{{ organization.image.url }}{% else %}{% static 'images/nobody.jpg' %}{% endif %}" 
+            <img src="{% if organization.image %}{% cloudinary_url organization.image %}{% else %}{% static 'images/nobody.jpg' %}{% endif %}" 
                 class="card-img-top d-block w-100 border-bottom custom-detail-img" 
                 alt="{{ organization.name }}">
             <div class="card-body">
                 <!-- Organization Name, Founded Date, Country -->
                 <h5 class="card-title mb-1 text-truncate custom-title">{{ organization.name }}</h5>
-                <h6 class="text-muted custom-date">Founded: {{ organization.founded }}</h6>
+                <h6 class="text-muted custom-date">Founded: {{ organization.foundation }}</h6>
                 <p class="text-muted custom-country">Country: {{ organization.country }}</p>
                 <p class="card-text">{{ organization.description }}</p>
             </div>
@@ -49,7 +51,9 @@
         <div class="w-75 me-3"> 
             <div class="card">
                 <!-- Article Image -->
-                <img src="{% if organization.image %}{{ organization.image.url }}{% else %}{% static 'images/nobody.jpg' %}{% endif %}" class="card-img-top d-block w-100 border-bottom custom-img" alt="{{ news_article.title }}">
+                <img src="{% if organization.image %}{% cloudinary_url news_article.image %}{% else %}{% static 'images/nobody.jpg' %}{% endif %}"
+                    class="card-img-top d-block w-100 border-bottom custom-img"
+                    alt="{{ news_article.title }}">
                 <div class="card-body">
                     <div class="d-flex gap-4 align-items-center justify-content-between">
                         <div class="d-flex flex-column">

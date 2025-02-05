@@ -3,6 +3,9 @@ import os
 import django_heroku
 import sys
 import dj_database_url
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 if os.path.isfile('env.py'):
     import env
 
@@ -10,7 +13,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = os.environ.get('SECRET_KEY')
 
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = [
     '8000-rodrivazque-updatednews-dp5j5rrqplg.ws.codeinstitute-ide.net',
@@ -25,6 +28,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'cloudinary',
+    'cloudinary_storage',
     'news',
     'django_summernote',
     'django.contrib.sites',
@@ -130,3 +135,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 django_heroku.settings(locals())
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+
+CLOUDINARY_STORAGE = {
+    'CLOUD_NAME': os.getenv('CLOUDINARY_CLOUD_NAME'),
+    'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
+    'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
+}
+DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'

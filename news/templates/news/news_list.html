@@ -1,6 +1,7 @@
 {% extends 'base.html' %}
 {% block content %}
 {% load static %}
+{% load cloudinary %}
 
 {% if messages %}
     <div class="messages">
@@ -27,7 +28,7 @@
     <!-- Article Content (Card) -->
     <div class="w-100 w-md-75 me-md-3">
         <div class="card">
-            <img src="{% if article.image %}{{ article.image.url }}{% else %}{% static 'images/nobody.jpg' %}{% endif %}" 
+            <img src="{% if article.image %}{% cloudinary_url article.image %}{% else %}{% static 'images/nobody.jpg' %}{% endif %}" 
                 class="card-img-top d-block w-100 border-bottom custom-img" alt="{{ article.title }}">
             <div class="card-body">
                 <h5 class="card-title mb-1 text-truncate custom-title">{{ article.title }}</h5>
