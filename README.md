@@ -368,6 +368,7 @@ specific entities.
 - **Backend**: 
   - Django for handling backend logic and database models
   - SQLite (development) / PostgreSQL (production) for database management
+  - Cloudinary for image storing
   
 - **APIs**: 
   - Django built-in authentication for user management.
