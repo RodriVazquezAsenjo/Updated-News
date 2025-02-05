@@ -6,6 +6,7 @@ import dj_database_url
 import cloudinary
 import cloudinary.uploader
 import cloudinary.api
+from cloudinary import config
 if os.path.isfile('env.py'):
     import env
 
@@ -142,4 +143,9 @@ CLOUDINARY_STORAGE = {
     'API_KEY': os.getenv('CLOUDINARY_API_KEY'),
     'API_SECRET': os.getenv('CLOUDINARY_API_SECRET'),
 }
+
+cloudinary.config(
+    url=os.environ.get('CLOUDINARY_URL')
+)
+
 DEFAULT_FILE_STORAGE = 'cloudinary_storage.storage.MediaCloudinaryStorage'
