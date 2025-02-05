@@ -1,5 +1,8 @@
 # updated_news
 
+
+Deployed website: https://dashboard.heroku.com/apps/updated-news/deploy/github
+
 ## Description
 `updated_news` is a Django-based platform for publishing and interacting with news articles.
 Users can view, like, bookmark, comment on, and share articles. The platform also allows for
